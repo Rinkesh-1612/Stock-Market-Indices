@@ -1,0 +1,110 @@
+Country,Index,Link,Remark
+## AFRICA ##,,,
+Algeria,S&P/Algiers Stock Exchange,https://www.spglobal.com/spdji/en/indices/equity/sp-algiers-stock-exchange,General Information
+Botswana,BSE DCI,https://www.bse.co.bw/,Main exchange site
+Egypt,EGX 30,https://www.egx.com.eg/en/indices.aspx?type=1&Id=1,Official index page
+Ghana,GSE Composite Index,https://gse.com.gh/indices-2/,Official index page
+Ivory Coast,BRVM Composite,https://www.brvm.org/en/indices,Official index page
+Kenya,NSE All Share Index (NASI),https://www.nse.co.ke/market-statistics/indices.html,Official index page
+Morocco,MASI,https://www.casablanca-bourse.com/en/market-data/market-summary,Official index page
+Nigeria,NGX All-Share,https://ngxgroup.com/exchange/data/indices/,Official index page
+South Africa,FTSE/JSE All Share,https://www.jse.co.za/trade/indices-overview,Official index page
+Tunisia,TUNINDEX,http://www.bvmt.com.tn/en/marches/indices,Official index page
+Zambia,LuSE All Share Index,https://www.luse.co.zm/,Main exchange site
+Zimbabwe,ZSE All Share,https://www.zse.co.zw/indices/,Official index page
+## AMERICAS ##,,,
+Argentina,S&P Merval,https://www.byma.com.ar/indices/,Official index page
+Brazil,IBOVESPA,https://finance.yahoo.com/quote/%5EBVSP/history/,Historical data available
+Canada,S&P/TSX Composite Index,https://finance.yahoo.com/quote/%5EGSPTSE/history/,Historical data available
+Chile,S&P IPSA,https://www.spglobal.com/spdji/en/indices/equity/sp-ipsa,General Information
+Colombia,MSCI COLCAP,https://www.msci.com/our-solutions/indexes/colombia-indexes,General Information
+Jamaica,JSE Index,https://www.jamstockex.com/,Main exchange site
+Mexico,S&P/BMV IPC,https://www.bmv.com.mx/es/indices/principales,Official index page
+Peru,S&P/BVL Peru General,https://www.bvl.com.pe/mercado/indicadores,Official index page
+US,S&P 500,https://site.financialmodelingprep.com/developer/docs/historical-sp-500-companies-api,
+US,NASDAQ Composite,https://www.nasdaq.com/market-activity/quotes/historical,
+US,Dow Jones Industrial Average,https://finance.yahoo.com/quote/%5EDJI/components/,
+US,Russell 2000,https://www.ftserussell.com/products/indices/russell-us,General Information
+US,Wilshire 5000,https://www.wilshire.com/indexes/wilshire-5000-family/wilshire-5000-total-market-index,General Information
+US,NYSE Composite,https://www.nyse.com/market-data/indices,Official index page
+Venezuela,Caracas Stock Index,http://www.caracasstock.com/,Main exchange site
+## ASIA ##,,,
+Bahrain,Bahrain All Share Index,https://www.bahrainbourse.com/market-data,Official index page
+Bangladesh,DSEX,https://www.dsebd.org/,Main exchange site
+China,SSE Composite Index,https://finance.yahoo.com/quote/000001.SS/history/,Historical data available
+China,CSI 300 Index,https://finance.yahoo.com/quote/000300.SS/history/,Historical data available
+China,SZSE Component,http://www.szse.cn/English/indices/index.html,Official index page
+Hong Kong,Hang Seng Index,https://finance.yahoo.com/quote/%5EHSI/history/,Historical data available
+India,NSE Nifty 50,https://www.nseindia.com/reports-indices-historical-index-data,
+India,BSE Sensex,https://www.bseindia.com/indices/IndexArchiveData.html,
+India,Nifty Bank Index,https://www.niftyindices.com/indices/equity/sectoral-indices/nifty-bank,Official index page
+Indonesia,IDX Composite,https://www.idx.co.id/en/market-data/index-data,Official index page
+Iran,TEPIX,https://www.tse.ir/en/indices,Official index page
+Israel,TA-125,https://info.tase.co.il/eng/marketdata/indices/pages/default.aspx,Official index page
+Japan,Nikkei 225,https://finance.yahoo.com/quote/%5EN225/history/,Historical data available
+Japan,TOPIX,https://www.jpx.co.jp/english/markets/indices/topix/index.html,Official index page
+Jordan,ASE Market Capitalization Weighted Index,https://www.ase.com.jo/en/indices,Official index page
+Kazakhstan,KASE Index,https://kase.kz/en/indices/show/KASE/,Official index page
+Kuwait,Boursa Kuwait Main 50,https://www.boursakuwait.com.kw/en/market-watch/indices,Official index page
+Malaysia,FTSE Bursa Malaysia KLCI,https://www.bursamalaysia.com/market_information/market_statistic/indices,Official index page
+Mongolia,MSE Top 20,https://mse.mn/en/indices/2,Official index page
+Oman,MSX 30,https://www.msx.om/index.html,Official index page
+Pakistan,KSE 100 Index,https://www.psx.com.pk/psx/indices-summary,Official index page
+Palestine,Al-Quds Index,https://www.pex.ps/pex/index.php?lang=en,Main exchange site
+Philippines,PSE Composite Index (PSEi),https://www.pse.com.ph/market-indices/,Official index page
+Qatar,QE Index,https://www.qe.com.qa/market-summary,Official index page
+Saudi Arabia,Tadawul All-Share Index (TASI),https://www.saudiexchange.sa/wps/portal/tadawul/home/indices/indices-watch,Official index page
+Singapore,Straits Times Index (STI),https://www.sgx.com/indices/products/sti,Official index page
+South Korea,KOSPI Composite Index,https://finance.yahoo.com/quote/%5EKS11/history/,Historical data available
+Sri Lanka,S&P Sri Lanka 20,https://www.cse.lk/pages/indices/indices.html,Official index page
+Taiwan,TSEC Weighted Index,https://finance.yahoo.com/quote/%5ETWII/history/,Historical data available
+Thailand,SET Index,https://www.set.or.th/en/market/market_info/index.html,Official index page
+Turkey,BIST 100,https://www.borsaistanbul.com/en/sayfa/33/indices,Official index page
+United Arab Emirates,ADX General,https://www.adx.ae/english/pages/marketwatch/indices/default.aspx,Official index page
+United Arab Emirates,DFM General Index,https://www.dfm.ae/market-data/indices,Official index page
+Vietnam,VN-Index,https://www.hsx.vn/Modules/Listed/Web/Indices?fid=c952441f3e7944208d3e9a510375a034,Official index page
+## EUROPE ##,,,
+Austria,Austrian Traded Index (ATX),https://www.wienerborse.at/en/indices/,Official index page
+Belgium,BEL 20,https://live.euronext.com/en/product/indices/BE0003772118-XBRU,Official index page
+Bulgaria,SOFIX,https://www.bse-sofia.bg/en/indices,Official index page
+Croatia,CROBEX,https://zse.hr/en/indices/28,Official index page
+Cyprus,CSE General Index,https://www.cse.com.cy/en-GB/markets/indices/,Official index page
+Czech Republic,PX Index,https://www.pse.cz/en/indices/overview,Official index page
+Denmark,OMX Copenhagen 25,http://www.nasdaqomxnordic.com/indexes/historical_prices?Instrument=DX0000191312,Official index page
+Eurozone,EURO STOXX 50,https://www.stoxx.com/index-details?symbol=SX5E,Have to Reconstruct from component list here
+Finland,OMX Helsinki 25,http://www.nasdaqomxnordic.com/indexes/historical_prices?Instrument=FI0008900212,Official index page
+France,CAC 40,https://www.euronext.com/en/indices/cac-40,
+Germany,DAX,https://in.tradingview.com/symbols/XETR-DAX/components/,Have to Reconstruct from component list here
+Greece,Athex Composite,https://www.athexgroup.gr/en/indices-market-prices,Official index page
+Hungary,Budapest Stock Index (BUX),https://bse.hu/main-page-of-data?id=8,Official index page
+Iceland,OMXI8,http://www.nasdaqomxnordic.com/indexes,Main exchange site
+Ireland,ISEQ 20,https://live.euronext.com/en/product/indices/IE00B02FK170-XDUB,Official index page
+Italy,FTSE MIB,https://www.borsaitaliana.it/borsa/indici/indici-in-continua/ftse-mib.html,Official index page
+Latvia,OMX Riga,http://www.nasdaqomxnordic.com/indexes/historical_prices?Instrument=LV0000700029,Official index page
+Lithuania,OMX Vilnius,http://www.nasdaqomxnordic.com/indexes/historical_prices?Instrument=LT0000700013,Official index page
+Luxembourg,LuxX Index,https://www.bourse.lu/indices,Official index page
+Malta,MSE Equity Price Index,https://www.borzamalta.com.mt/,Main exchange site
+Netherlands,AEX index,https://live.euronext.com/en/product/indices/NL0000000107-XAMS/market-information,
+Norway,OBX Index,https://live.euronext.com/en/product/indices/NO0000000021-XOSL,Official index page
+Poland,WIG20,https://www.gpw.pl/indices,Official index page
+Portugal,PSI 20,https://live.euronext.com/en/product/indices/PTING0200002-XLIS,Official index page
+Romania,BET index,https://www.bvb.ro/FinancialInstruments/Indices/FinancialInstrumentsDetails.aspx?s=BET,Official index page
+Russia,MOEX Russia Index,https://www.moex.com/en/index/IMOEX,
+Serbia,BELEX15,https://www.belex.rs/data/indices_data/BELEX15,Official index page
+Slovakia,SAX,https://www.bsse.sk/en/indices-calculation/,Official index page
+Slovenia,SBITOP,https://ljse.si/en/indices/1,Official index page
+Spain,IBEX 35,https://www.bolsamadrid.es/ing/aspx/Indices/Resumen.aspx,
+Sweden,OMX Stockholm 30,http://www.nasdaqomxnordic.com/indexes/historical_prices?Instrument=SE0000337842,Official index page
+Switzerland,Swiss Market Index (SMI),https://www.six-group.com/en/products-services/the-swiss-stock-exchange/market-data/indices/equity-indices/smi.html#index_data,Check Composition tab for components
+UK,FTSE 100,https://www.londonstockexchange.com/indices/ftse-100/constituents/table,Have to Reconstruct from component list here
+UK,FTSE 250,https://www.londonstockexchange.com/indices/ftse-250,Have to Reconstruct from component list here
+Ukraine,PFTS Index,https://pfts.ua/en-us/indexes/,Official index page
+## OCEANIA ##,,,
+Australia,S&P/ASX 200,https://www.marketindex.com.au/asx200,Component list and data available
+New Zealand,S&P/NZX 50,https://www.nzx.com/markets/indices,Official index page
+## TRANSNATIONAL ##,,,
+Global,MSCI World,https://www.msci.com/our-solutions/indexes/acwi,Data usually requires subscription
+Global,S&P Global 100,https://www.spglobal.com/spdji/en/indices/equity/sp-global-100,General Information
+Europe,STOXX Europe 600,https://www.stoxx.com/index-details?symbol=SXXP,Have to Reconstruct from component list here
+Europe,FTSEurofirst 300,https://www.ftserussell.com/products/indices/ftseurofirst,General Information
+Nordic,OMX Nordic 40,http://www.nasdaqomxnordic.com/indexes/index_info?Instrument=SE0001333348,Official index page

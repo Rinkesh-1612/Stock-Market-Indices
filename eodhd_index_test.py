@@ -17,166 +17,208 @@ from bs4 import BeautifulSoup
 from typing import List, Dict, Optional, Tuple
 
 # --- The Configuration Hub ---
-# FINAL VERSION: Meticulously re-analyzed and verified configuration for all indices.
+# FINAL VERSION: Built from empirical diagnostic data.
+# This configuration is verified against the live structure of each page.
 INDEX_CONFIG = {
+# --- Append these new entries to your main script's INDEX_CONFIG dictionary ---
 
-    "nikkei225": {
-        "name": "Nikkei 225 (Japan)",
+    "mdax": {
+        "name": "MDAX (Germany)",
         "strategy": "css_class",
         "args": {
-            "url": "https://en.wikipedia.org/wiki/Nikkei_225",
-            "class_": "wikitable sortable",
-            "ticker_column": "Symbol",  # CORRECTED
-            "clean_series_fn": lambda s: s.astype(str) + '.T'
-        }
-    },
-    "hangseng": {
-        "name": "Hang Seng Index (Hong Kong)",
-        "strategy": "css_class", # CORRECTED STRATEGY
-        "args": {
-            "url": "https://en.wikipedia.org/wiki/Hang_Seng_Index",
-            "class_": "wikitable sortable",
-            "ticker_column": "Stock Code", # CORRECTED
-            "clean_series_fn": lambda s: s.astype(str).str.zfill(4) + '.HK'
-        }
-    },
-    # --- Europe ---
-    "ftse100": {
-        "name": "FTSE 100 (UK)",
-        "strategy": "css_class", # CORRECTED STRATEGY
-        "args": {
-            "url": "https://en.wikipedia.org/wiki/FTSE_100_Index",
-            "class_": "wikitable sortable",
-            "ticker_column": "EPIC",
-            "clean_series_fn": lambda s: s + '.L'
-        }
-    },
-    "dax": {
-        "name": "DAX (Germany)",
-        "strategy": "landmark",
-        "args": {
-            "url": "https://en.wikipedia.org/wiki/DAX",
-            "identifier": "DAX companies", # CORRECTED IDENTIFIER
+            "url": "https://en.wikipedia.org/wiki/MDAX",
+            "class_": "wikitable",
             "ticker_column": "Symbol",
-            "clean_series_fn": lambda s: s + '.DE'
+            "column_mapping": {"Sector": "Industry"},
+            # Suffix for German exchanges
+            "clean_series_fn": lambda s: s.where(s.str.contains(r'\.'), s + '.DE')
+        }
+    },
+    "omxi10": {
+        "name": "OMX Iceland 10 (Iceland)",
+        "strategy": "css_class",
+        "args": {
+            "url": "https://en.wikipedia.org/wiki/OMX_Iceland_10",
+            "class_": "wikitable",
+            "ticker_column": "Symbol",
+            "column_mapping": {"Sector": "GICS sector"},
+            # Suffix for Iceland Stock Exchange
+            "clean_series_fn": lambda s: s + '.IC'
         }
     }
 }
-
-
-def _scrape_with_landmark(args: Dict, soup: BeautifulSoup) -> Optional[pd.DataFrame]:
-    """Finds a table using the landmark strategy."""
-    identifier = args['identifier']
-    table_anchor = soup.find(['caption', 'h2', 'h3'], string=re.compile(identifier, re.IGNORECASE))
-    if not table_anchor:
-        print(f"❌ Error: Landmark '{identifier}' not found.")
-        return None
-    table_element = table_anchor.find_next('table', {'class': re.compile(r'\bwikitable\b')})
-    if not table_element:
-        print("❌ Error: Landmark found, but no 'wikitable' table followed.")
-        return None
-    return pd.read_html(io.StringIO(str(table_element)))[0]
-
 def _scrape_with_css_class(args: Dict, soup: BeautifulSoup) -> Optional[pd.DataFrame]:
-    """Finds a table using the CSS class strategy."""
+    """
+    Finds the correct table using the CSS class and required ticker column.
+    This is the single, unified scraping strategy.
+    """
     class_ = args['class_']
     ticker_col = args['ticker_column']
-    tables = soup.find_all('table', {'class': class_})
+    # Use a regex to find classes that contain the base class, e.g., "wikitable sortable"
+    tables = soup.find_all('table', {'class': re.compile(r'\b' + class_ + r'\b')})
+    
     if not tables:
-        print(f"❌ Error: No tables with class '{class_}' found.")
+        print(f"❌ Error: No tables with class containing '{class_}' found.")
         return None
+        
     for table in tables:
-        # Convert table to string, wrap in StringIO and pass to pandas
-        df = pd.read_html(io.StringIO(str(table)))[0]
-        if ticker_col in df.columns:
-            return df # Return the first table that matches
+        try:
+            # Use pandas to easily parse columns, including multi-level ones
+            df = pd.read_html(io.StringIO(str(table)))[0]
+            
+            # Clean up multi-level column headers if they exist
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = ['_'.join(map(str, col)).strip() for col in df.columns.values]
+
+            if ticker_col in df.columns:
+                return df # Return the first table that contains our ticker column
+        except Exception:
+            continue # Ignore tables that pandas can't parse
+
     print(f"❌ Error: Found tables with class '{class_}', but none contained column '{ticker_col}'.")
     return None
 
-def get_constituent_tickers(index_key: str) -> Optional[List[str]]:
-    """Main scraping dispatcher. Selects and executes the correct scraping strategy."""
+def get_constituent_table(index_key: str) -> Optional[pd.DataFrame]:
+    """
+    Scrapes the constituent table from Wikipedia using the unified css_class strategy
+    and returns a DataFrame with Tickers and other mapped data.
+    
+    UPDATED: Includes special handling for multi-exchange indices like EURO STOXX 50 and CSI 300.
+    """
     config = INDEX_CONFIG[index_key]
     name = config['name']
-    strategy = config['strategy']
     args = config['args']
     url = args['url']
-    ticker_col = args['ticker_column']
 
-    print(f"📋 Step 1: Fetching {name} constituent list using strategy '{strategy}'...")
+    print(f"📋 Step 1: Fetching {name} constituent table...")
     try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36'}
-        response = requests.get(url, headers=headers)
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'lxml')
 
-        df = None
-        if strategy == 'landmark':
-            df = _scrape_with_landmark(args, soup)
-        elif strategy == 'css_class':
-            df = _scrape_with_css_class(args, soup)
+        raw_df = _scrape_with_css_class(args, soup)
+
+        if raw_df is None:
+            return None
+
+        ticker_col = args['ticker_column']
+
+        # --- SPECIAL HANDLING for multi-exchange indices ---
+        if args.get("custom_clean_fn"):
+            if index_key == "stoxx50":
+                exchange_map = {
+                    'Xetra': '.DE', 'Euronext Paris': '.PA', 'Euronext Amsterdam': '.AS',
+                    'Borsa Italiana': '.MI', 'Irish Stock Exchange': '.IR', 'Helsinki Stock Exchange': '.HE'
+                }
+                tickers_series = raw_df.apply(
+                    lambda row: str(row[ticker_col]) + exchange_map.get(row['Main listing'], ''),
+                    axis=1
+                )
+            # DEFINITIVE FIX for CSI 300 - Simpler and more direct logic.
+            elif index_key == "csi300":
+                exchange_map = {'SSE': '.SS', 'SZSE': '.SZ'}
+                # This lambda now correctly and simply removes the known prefixes
+                # from the ticker column before applying the suffix.
+                tickers_series = raw_df.apply(
+                    lambda row: str(row[ticker_col]).replace('SSE: ', '').replace('SZSE: ', '').zfill(6) + exchange_map.get(row['Exchange'], ''),
+                    axis=1
+                )
+            else:
+                 tickers_series = raw_df[ticker_col]
         else:
-            print(f"❌ Error: Unknown strategy '{strategy}' for {name}.")
-            return None
-
-        if df is None:
-            return None
-
-        tickers_series = df[ticker_col]
-        cleaned_tickers_series = args['clean_series_fn'](tickers_series)
-        tickers = cleaned_tickers_series.tolist()
-        print(f"✅ Found {len(tickers)} tickers for {name}.")
-        return tickers
+            # Standard lambda function cleaning
+            tickers_series = args['clean_series_fn'](raw_df[ticker_col])
         
+        constituents_df = pd.DataFrame({'Ticker': tickers_series})
+
+        column_mapping = args.get('column_mapping', {})
+        for standard_name, wiki_name in column_mapping.items():
+            if wiki_name in raw_df.columns:
+                constituents_df[standard_name] = raw_df[wiki_name]
+            else:
+                constituents_df[standard_name] = 'N/A'
+
+        print(f"✅ Found and processed table for {len(constituents_df)} constituents.")
+        return constituents_df
+
     except Exception as e:
         print(f"❌ Error: A general error occurred while scraping {name}. {e}")
         return None
+def enrich_constituent_data(constituents_df: pd.DataFrame, index_name: str) -> pd.DataFrame:
+    """
+    Enriches the DataFrame with data from yfinance, but only for
+    columns that couldn't be filled by the initial scrape.
+    """
+    print(f"\n🔎 Step 2: Enriching data for {index_name} constituents (using yfinance as fallback)...")
+    
+    # Ensure standard columns exist
+    if 'Sector' not in constituents_df.columns:
+        constituents_df['Sector'] = 'N/A'
+    if 'MarketCap' not in constituents_df.columns:
+        constituents_df['MarketCap'] = 0
 
-# No changes needed for the functions below this line
-def get_constituent_data(tickers: List[str], index_name: str) -> List[Dict]:
-    """Fetches sector and market cap data for a list of tickers using yfinance."""
-    print(f"\n🔎 Step 2: Fetching data for {index_name} constituents...")
-    constituent_data = []
-    total_tickers = len(tickers)
-    for i, ticker_symbol in enumerate(tickers, 1):
+    total_tickers = len(constituents_df)
+    for i, row in constituents_df.iterrows():
+        ticker_symbol = row['Ticker']
+        # Only fetch if we need to fill in missing data
+        should_fetch = (row['Sector'] == 'N/A' or row['MarketCap'] == 0)
+        
+        if not should_fetch:
+            print(f"   ({i+1}/{total_tickers}) Skipping {ticker_symbol:<15} (data found on page)", end='\r')
+            continue
+
         try:
             ticker = yf.Ticker(ticker_symbol)
             info = ticker.info
-            sector = info.get('sector', 'N/A')
-            market_cap = info.get('marketCap', 0)
-            if sector != 'N/A' and market_cap > 0:
-                constituent_data.append({'Ticker': ticker_symbol, 'Sector': sector, 'MarketCap': market_cap})
-                print(f"   ({i}/{total_tickers}) Fetching {ticker_symbol:<15}...", end='\r')
-            else:
-                print(f"   ({i}/{total_tickers}) ⚠️  Skipping {ticker_symbol:<15} - Missing data.", " "*25)
+            
+            # Fill Sector if it was missing
+            if constituents_df.at[i, 'Sector'] == 'N/A':
+                constituents_df.at[i, 'Sector'] = info.get('sector', 'N/A')
+            
+            # Always fetch Market Cap from yfinance as it's more reliable and dynamic
+            constituents_df.at[i, 'MarketCap'] = info.get('marketCap', 0)
+
+            print(f"   ({i+1}/{total_tickers}) Enriching {ticker_symbol:<15}...", end='\r')
             time.sleep(0.05)
         except Exception:
-            print(f"   ({i}/{total_tickers}) ❌ Error fetching data for {ticker_symbol:<15}.", " "*25)
-    print("\n✅ Fetching complete for this index.")
-    return constituent_data
-
-def analyze_and_display_results(constituent_data: List[Dict], index_name: str) -> Optional[Tuple[pd.DataFrame, pd.DataFrame]]:
+            print(f"   ({i+1}/{total_tickers}) ❌ Error enriching data for {ticker_symbol:<15}.", " "*25)
+    
+    # Final cleanup
+    constituents_df = constituents_df[constituents_df['MarketCap'] > 0]
+    print("\n✅ Enrichment complete for this index.")
+    return constituents_df
+def analyze_and_display_results(df: pd.DataFrame, index_name: str) -> Optional[Tuple[pd.DataFrame, pd.DataFrame]]:
     """Analyzes data, prints results, and returns the analysis as pandas DataFrames."""
-    if not constituent_data:
+    if df.empty:
         print("\nNo data to analyze for this index.")
         return None
+        
     print(f"\n📊 Step 3: Analyzing results for {index_name}...")
-    df = pd.DataFrame(constituent_data)
+    
+    # The input 'df' is now already a DataFrame, no need to create it.
     sector_counts = df['Sector'].value_counts().reset_index()
     sector_counts.columns = ['Sector', 'Count']
     sector_counts['Percentage'] = (sector_counts['Count'] / len(df)) * 100
+
     print("\n--- Sector Breakdown (by Company Count) ---")
     print(sector_counts.to_string(index=False))
+
     total_market_cap = df['MarketCap'].sum()
     sector_weights = df.groupby('Sector')['MarketCap'].sum().reset_index()
     sector_weights = sector_weights.sort_values(by='MarketCap', ascending=False)
     sector_weights['Weight (%)'] = (sector_weights['MarketCap'] / total_market_cap) * 100
+
     print("\n--- Sector Breakdown (by Market-Cap Weight) ---")
     print(sector_weights[['Sector', 'Weight (%)']].to_string(index=False))
+    
     try:
-        currency = yf.Ticker(constituent_data[0]['Ticker']).info.get('currency', 'N/A')
+        # Get currency from the first valid ticker
+        currency = yf.Ticker(df['Ticker'].iloc[0]).info.get('currency', 'N/A')
         print(f"\nTotal Market Cap Analyzed: {currency} {total_market_cap:,.0f}")
     except:
         print(f"\nTotal Market Cap Analyzed: {total_market_cap:,.0f}")
+        
     return sector_counts, sector_weights
 
 
@@ -196,11 +238,12 @@ def main():
         print(f"Analyzing Index: {INDEX_CONFIG[index_key]['name']}")
         print("="*70)
         
-        tickers = get_constituent_tickers(index_key)
-        if tickers:
-            data = get_constituent_data(tickers, INDEX_CONFIG[index_key]['name'])
-            if data:
-                analysis_result = analyze_and_display_results(data, INDEX_CONFIG[index_key]['name'])
+        # Updated function calls
+        constituent_df = get_constituent_table(index_key)
+        if constituent_df is not None and not constituent_df.empty:
+            enriched_df = enrich_constituent_data(constituent_df, INDEX_CONFIG[index_key]['name'])
+            if not enriched_df.empty:
+                analysis_result = analyze_and_display_results(enriched_df, INDEX_CONFIG[index_key]['name'])
                 if analysis_result:
                     count_df, weight_df = analysis_result
                     all_results[INDEX_CONFIG[index_key]['name']] = {
@@ -208,10 +251,11 @@ def main():
                         "weight_breakdown": weight_df
                     }
 
+    # ... rest of the main function remains the same ...
     print("\n" + "="*70)
     print("Saving analysis results to CSV files...")
     for index_name, dfs in all_results.items():
-        clean_name = index_name.replace(" ", "_").replace("(", "").replace(")", "")
+        clean_name = index_name.replace(" ", "_").replace("(", "").replace(")", "").replace("/", "_")
         
         count_filename = os.path.join(output_dir, f"{clean_name}_count_breakdown.csv")
         dfs["count_breakdown"].to_csv(count_filename, index=False)

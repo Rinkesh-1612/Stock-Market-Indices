@@ -22,28 +22,28 @@ from typing import List, Dict, Optional, Tuple
 INDEX_CONFIG = {
 # --- Append these new entries to your main script's INDEX_CONFIG dictionary ---
 
-    "mdax": {
-        "name": "MDAX (Germany)",
+    "spasia50": {
+        "name": "S&P Asia 50",
         "strategy": "css_class",
         "args": {
-            "url": "https://en.wikipedia.org/wiki/MDAX",
+            "url": "https://en.wikipedia.org/wiki/S%26P_Asia_50",
             "class_": "wikitable",
-            "ticker_column": "Symbol",
+            "ticker_column": "Ticker",
             "column_mapping": {"Sector": "Industry"},
-            # Suffix for German exchanges
-            "clean_series_fn": lambda s: s.where(s.str.contains(r'\.'), s + '.DE')
+            # Use our new custom function to handle multiple Asian exchanges
+            "custom_clean_fn": True
         }
     },
-    "omxi10": {
-        "name": "OMX Iceland 10 (Iceland)",
+    "splatin40": {
+        "name": "S&P Latin America 40",
         "strategy": "css_class",
         "args": {
-            "url": "https://en.wikipedia.org/wiki/OMX_Iceland_10",
+            "url": "https://en.wikipedia.org/wiki/S%26P_Latin_America_40",
             "class_": "wikitable",
-            "ticker_column": "Symbol",
-            "column_mapping": {"Sector": "GICS sector"},
-            # Suffix for Iceland Stock Exchange
-            "clean_series_fn": lambda s: s + '.IC'
+            "ticker_column": "Ticker symbol",
+            "column_mapping": {"Sector": "Industry"},
+            # Use our new custom function to handle multiple Latin American exchanges
+            "custom_clean_fn": True
         }
     }
 }
@@ -77,13 +77,12 @@ def _scrape_with_css_class(args: Dict, soup: BeautifulSoup) -> Optional[pd.DataF
 
     print(f"❌ Error: Found tables with class '{class_}', but none contained column '{ticker_col}'.")
     return None
-
 def get_constituent_table(index_key: str) -> Optional[pd.DataFrame]:
     """
     Scrapes the constituent table from Wikipedia using the unified css_class strategy
     and returns a DataFrame with Tickers and other mapped data.
     
-    UPDATED: Includes special handling for multi-exchange indices like EURO STOXX 50 and CSI 300.
+    UPGRADED: Now handles complex, multi-country regional indices like S&P Asia 50 and S&P Latin America 40.
     """
     config = INDEX_CONFIG[index_key]
     name = config['name']
@@ -104,7 +103,7 @@ def get_constituent_table(index_key: str) -> Optional[pd.DataFrame]:
 
         ticker_col = args['ticker_column']
 
-        # --- SPECIAL HANDLING for multi-exchange indices ---
+        # --- SPECIAL HANDLING for multi-exchange/multi-country indices ---
         if args.get("custom_clean_fn"):
             if index_key == "stoxx50":
                 exchange_map = {
@@ -115,19 +114,23 @@ def get_constituent_table(index_key: str) -> Optional[pd.DataFrame]:
                     lambda row: str(row[ticker_col]) + exchange_map.get(row['Main listing'], ''),
                     axis=1
                 )
-            # DEFINITIVE FIX for CSI 300 - Simpler and more direct logic.
-            elif index_key == "csi300":
-                exchange_map = {'SSE': '.SS', 'SZSE': '.SZ'}
-                # This lambda now correctly and simply removes the known prefixes
-                # from the ticker column before applying the suffix.
+            # NEW: Custom logic for S&P Asia 50
+            elif index_key == "spasia50":
+                exchange_map = {'Hong Kong': '.HK', 'South Korea': '.KS', 'Singapore': '.SI', 'Taiwan': '.TW'}
                 tickers_series = raw_df.apply(
-                    lambda row: str(row[ticker_col]).replace('SSE: ', '').replace('SZSE: ', '').zfill(6) + exchange_map.get(row['Exchange'], ''),
+                    lambda row: str(row[ticker_col]) + exchange_map.get(row['Country'], ''),
+                    axis=1
+                )
+            # NEW: Custom logic for S&P Latin America 40
+            elif index_key == "splatin40":
+                exchange_map = {'Brazil': '.SA', 'Mexico': '.MX', 'Chile': '.SN', 'Peru': '.LM', 'Colombia': '.CN'}
+                tickers_series = raw_df.apply(
+                    lambda row: str(row[ticker_col]) + exchange_map.get(row['Country'], ''),
                     axis=1
                 )
             else:
                  tickers_series = raw_df[ticker_col]
         else:
-            # Standard lambda function cleaning
             tickers_series = args['clean_series_fn'](raw_df[ticker_col])
         
         constituents_df = pd.DataFrame({'Ticker': tickers_series})

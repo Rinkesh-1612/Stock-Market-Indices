@@ -12,15 +12,15 @@ import io
 import re
 from bs4 import BeautifulSoup
 # In your diagnostic script, replace the INDEX_CONFIG with this complete version:
-
-# In your diagnostic script, use this focused INDEX_CONFIG:
+# In your diagnostic script, use this new focused INDEX_CONFIG:
 
 # In your diagnostic script, use this new focused INDEX_CONFIG:
 
 INDEX_CONFIG = {
-    "mdax": {"name": "MDAX (Germany)", "url": "https://en.wikipedia.org/wiki/MDAX"},
-    "sdax": {"name": "SDAX (Germany)", "url": "https://en.wikipedia.org/wiki/SDAX"},
-    "omxi10": {"name": "OMX Iceland 10 (Iceland)", "url": "https://en.wikipedia.org/wiki/OMX_Iceland_10"}
+    "spglobal100": {"name": "S&P Global 100", "url": "https://en.wikipedia.org/wiki/S%26P_Global_100"},
+    "stoxx600": {"name": "STOXX Europe 600", "url": "https://en.wikipedia.org/wiki/STOXX_Europe_600"},
+    "spasia50": {"name": "S&P Asia 50", "url": "https://en.wikipedia.org/wiki/S%26P_Asia_50"},
+    "splatin40": {"name": "S&P Latin America 40", "url": "https://en.wikipedia.org/wiki/S%26P_Latin_America_40"}
 }
 def diagnose_page_structure(index_name: str, url: str):
     """

@@ -9,7 +9,7 @@ engine = create_engine("mysql://harsh:hva123@localhost/stock_data")
 
 # --- Stock Data Configuration ---
 # !! Make sure this path is correct !!
-DATA_DIRECTORY = r"/home/harshvardhan/dcv/Stock-Market-Indices/index_analysis_reports"
+DATA_DIRECTORY = r"/home/harshvardhan/dcv/Stock-Market-Indices/global_index_reports"
 
 # 1. Find all CSV files
 csv_files = glob.glob(os.path.join(DATA_DIRECTORY, "*.csv"))

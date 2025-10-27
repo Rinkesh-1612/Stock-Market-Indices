@@ -1,0 +1,105 @@
+Index Name,Ticker,Exchange,City,Latitude,Longitude
+Dow Jones Global Titans 50,^DJGT,DJI,"New York, USA",40.7127281,-74.0060152
+FTSE All-World,VWRA.L,LSE,"London, UK",51.4893335,-0.1440551
+MSCI World,URTH,PCX,"New York, USA",40.7127281,-74.0060152
+S&P Global 100,^SPG100,SNP,"New York, USA",40.7127281,-74.0060152
+S&P Global 1200,^SPG1200,SNP,"New York, USA",40.7127281,-74.0060152
+The Global Dow,^GDOW,DJI,"New York, USA",40.7127281,-74.0060152
+MSCI EAFE,EFA,PCX,"New York, USA",40.7127281,-74.0060152
+S&P Asia 50,AIA,NGM,"New York, USA",40.7127281,-74.0060152
+EURO STOXX 50,^STOXX50E,ZRH,"Zurich, Switzerland",47.3744489,8.5410422
+STOXX Europe 600,^STOXX,ZRH,"Zurich, Switzerland",47.3744489,8.5410422
+S&P Europe 350,IEV,PCX,"New York, USA",40.7127281,-74.0060152
+S&P Latin America 40,ILF,PCX,"New York, USA",40.7127281,-74.0060152
+EGX 30 Index (Egypt),^CASE30,CAI,"Cairo, Egypt",30.0443879,31.2357257
+MASI index (Morocco),^MASI,YHD,"New York, USA",40.7127281,-74.0060152
+FTSE/JSE Top 40 Index (South Africa),^J203,N/A,N/A,,
+MERVAL (Argentina),^MERV,BUE,"Buenos Aires, Argentina",-34.6095579,-58.3887904
+Indice Bovespa (Brazil),^BVSP,SAO,"São Paulo, Brazil",-23.5506507,-46.6333824
+S&P/TSX Composite Index (Canada),^GSPTSE,TSI,"Toronto, Canada",43.6534817,-79.3839347
+S&P/TSX Venture Composite Index (Canada),^JX,N/A,N/A,,
+IPSA (Chile),^IPSA,SGO,"Santiago, Chile",-33.4377756,-70.6504502
+COLCAP (Colombia),^ICOLCAP,N/A,N/A,,
+Indice de Precios y Cotizaciones (IPC) Mexico,^MXX,MEX,"Mexico City, Mexico",19.3207722,-99.1514678
+S&P/BVL Peru General Index,^SPBLPGPT,SNP,"New York, USA",40.7127281,-74.0060152
+NYSE Arca Major Market Index,XMI.TO,TOR,"Toronto, Canada",43.6534817,-79.3839347
+CBOE Volatility Index (VIX),^VIX,CXI,N/A,,
+Dow Jones Industrial Average,^DJI,DJI,"New York, USA",40.7127281,-74.0060152
+Dow Jones Transportation Average,^DJT,DJI,"New York, USA",40.7127281,-74.0060152
+Dow Jones Utility Average,^DJU,DJI,"New York, USA",40.7127281,-74.0060152
+Nasdaq Composite,^IXIC,NIM,"New York, USA",40.7127281,-74.0060152
+Nasdaq-100,^NDX,NIM,"New York, USA",40.7127281,-74.0060152
+Russell 1000,^RUI,WCB,"New York, USA",40.7127281,-74.0060152
+Russell 2000,^RUT,WCB,"New York, USA",40.7127281,-74.0060152
+Russell 3000,^RUA,WCB,"New York, USA",40.7127281,-74.0060152
+Russell MidCap,IWR,PCX,"New York, USA",40.7127281,-74.0060152
+S&P 100,^OEX,WCB,"New York, USA",40.7127281,-74.0060152
+S&P 500,^GSPC,SNP,"New York, USA",40.7127281,-74.0060152
+S&P MidCap 400,^MID,NYS,"New York, USA",40.7127281,-74.0060152
+S&P SmallCap 600,IJR,PCX,"New York, USA",40.7127281,-74.0060152
+Wilshire 5000,^W5000,NYS,"New York, USA",40.7127281,-74.0060152
+Indice Bursatil de Capitalizacion (IBC) Venezuela,^IBC,YHD,"New York, USA",40.7127281,-74.0060152
+SSE Composite Index (China),000001.SS,SHH,"Shanghai, China",31.2312707,121.4700152
+SZSE Component Index (China),399001.SZ,SHZ,"Shanghai, China",31.2312707,121.4700152
+CSI 300 Index (China),000300.SS,SHH,"Shanghai, China",31.2312707,121.4700152
+SSE 50 Index (China),000016.SS,SHH,"Shanghai, China",31.2312707,121.4700152
+Hang Seng Index (Hong Kong),^HSI,HKG,Hong Kong,22.3506270,114.1849161
+BSE SENSEX (India),^BSESN,BSE,"Mumbai, India",19.0549990,72.8692035
+NIFTY 50 (India),^NSEI,NSI,"Mumbai, India",19.0549990,72.8692035
+NIFTY Next 50 (India),^NSMIDCP,NSI,"Mumbai, India",19.0549990,72.8692035
+IDX Composite (Indonesia),^JKSE,JKT,"Jakarta, Indonesia",-6.1754049,106.8271680
+TA-125 Index (Israel),^TA125,N/A,N/A,,
+TA-35 Index (Israel),^TA35,N/A,N/A,,
+Nikkei 225 (Japan),^N225,OSA,"Tokyo, Japan",35.6768601,139.7638947
+TOPIX (Japan),TPX.F,FRA,"Frankfurt, Germany",50.1106444,8.6820917
+FTSE Bursa Malaysia KLCI,^KLSE,KLS,"Kuala Lumpur, Malaysia",3.1526589,101.7022205
+KSE 100 Index (Pakistan),^KSE,YHD,"New York, USA",40.7127281,-74.0060152
+PSE Composite Index (Philippines),^PSEI,N/A,N/A,,
+Tadawul All-Share Index (Saudi Arabia),^TASI.SR,SAU,"Riyadh, Saudi Arabia",23.3333330,45.3333330
+Straits Times Index (STI) Singapore,^STI,SES,Singapore,1.3571070,103.8194992
+KOSPI (South Korea),^KS11,KSC,"Seoul, South Korea",37.5666791,126.9782914
+All Share Price Index (Sri Lanka),^CSE,YHD,"New York, USA",40.7127281,-74.0060152
+TAIEX (Taiwan),^TWII,TAI,"Taipei, Taiwan",25.0375198,121.5636796
+SET Index (Thailand),^SET.BK,SET,"Bangkok, Thailand",13.7524938,100.4935089
+BIST 100 (Turkey),XU100.IS,IST,"Istanbul, Turkey",41.0063810,28.9758715
+VN-Index (Vietnam),^VNINDEX,N/A,N/A,,
+ATX (Austria),^ATX,VIE,"Amsterdam, Netherlands",52.3730796,4.8924534
+BEL 20 (Belgium),^BFX,BRU,"Brussels, Belgium",50.8465573,4.3516970
+CROBEX (Croatia),^CROBEX,N/A,N/A,,
+PX Index (Czech Republic),^PX,WCB,"New York, USA",40.7127281,-74.0060152
+OMX Copenhagen 25 (Denmark),^OMXC25,STO,"Stockholm, Sweden",59.3251172,18.0710935
+OMX Helsinki 25 (Finland),^OMXH25,STO,"Stockholm, Sweden",59.3251172,18.0710935
+CAC 40 (France),^FCHI,PAR,"Paris, France",48.8534951,2.3483915
+CAC Next 20 (France),^CN20,PAR,"Paris, France",48.8534951,2.3483915
+SBF 120 (France),^SBF120,PAR,"Paris, France",48.8534951,2.3483915
+DAX (Germany),^GDAXI,GER,"Frankfurt, Germany",50.1106444,8.6820917
+MDAX (Germany),^MDAXI,GER,"Frankfurt, Germany",50.1106444,8.6820917
+TecDAX (Germany),^TECDAX,GER,"Frankfurt, Germany",50.1106444,8.6820917
+Athex Composite (Greece),^ATG,YHD,"New York, USA",40.7127281,-74.0060152
+BUX (Hungary),^BUX,YHD,"New York, USA",40.7127281,-74.0060152
+ISEQ 20 (Ireland),^ISEQ,ISE,"Dublin, Ireland",53.3493795,-6.2605593
+FTSE MIB (Italy),FTSEMIB.MI,MIL,"Milan, Italy",45.4641943,9.1896346
+AEX (Netherlands),^AEX,AMS,"Amsterdam, Netherlands",52.3730796,4.8924534
+AMX (Netherlands),^AMX,AMS,"Amsterdam, Netherlands",52.3730796,4.8924534
+OBX Index (Norway),^OBX,YHD,"New York, USA",40.7127281,-74.0060152
+WIG20 (Poland),^WIG20,YHD,"New York, USA",40.7127281,-74.0060152
+PSI-20 (Portugal),PSI20.LS,LIS,"Lisbon, Portugal",38.7077507,-9.1365919
+BELEX15 (Serbia),^BELEX15,N/A,N/A,,
+IBEX 35 (Spain),^IBEX,MCE,"Madrid, Spain",40.4167820,-3.7035070
+Madrid Stock Exchange General Index (Spain),^SMSI,YHD,"New York, USA",40.7127281,-74.0060152
+OMX Stockholm 30 (Sweden),^OMX,STO,"Stockholm, Sweden",59.3251172,18.0710935
+Swiss Market Index (SMI),^SSMI,EBS,"Zurich, Switzerland",47.3744489,8.5410422
+Swiss Leader Index (SLI),^SLI,N/A,N/A,,
+FTSE 100 Index (UK),^FTSE,FGI,"London, UK",51.4893335,-0.1440551
+FTSE MID 250 Index (UK),^FTMC,FGI,"London, UK",51.4893335,-0.1440551
+FTSE 350 Index (UK),^NMX,YHD,"New York, USA",40.7127281,-74.0060152
+FTSE All-Share Index (UK),^FTAS,FSI,"London, UK",51.4893335,-0.1440551
+All Ordinaries (Australia),^AORD,ASX,"Sydney, Australia",-33.8698439,151.2082848
+S&P/ASX 200 (Australia),^AXJO,ASX,"Sydney, Australia",-33.8698439,151.2082848
+S&P/ASX 300 (Australia),^AXKO,ASX,"Sydney, Australia",-33.8698439,151.2082848
+S&P/NZX 50 (New Zealand),^NZ50,NZE,"Wellington, New Zealand",-41.2887953,174.7772114
+Amex Oil Index (Energy),^XOI,NYS,"New York, USA",40.7127281,-74.0060152
+PHLX Semiconductor Sector (Electronics),^SOX,NIM,"New York, USA",40.7127281,-74.0060152
+HUI Gold Index (Metals),^HUI,NYS,"New York, USA",40.7127281,-74.0060152
+Philadelphia Gold and Silver Index (Metals),^XAU,NIM,"New York, USA",40.7127281,-74.0060152
+Palisades Water Index (ZWI),PHO,NGM,"New York, USA",40.7127281,-74.0060152

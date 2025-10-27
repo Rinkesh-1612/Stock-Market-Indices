@@ -1,0 +1,83 @@
+Index Name,Yahoo Finance Ticker
+Dow Jones Global Titans 50,^DJGT
+FTSE All-World,VWRA.L
+MSCI World,URTH
+S&P Global 100,^SPG100
+S&P Global 1200,^SPG1200
+The Global Dow,^GDOW
+MSCI EAFE,EFA
+S&P Asia 50,AIA
+S&P Europe 350,IEV
+S&P Latin America 40,ILF
+MERVAL (Argentina),^MERV
+Indice Bovespa (Brazil),^BVSP
+S&P/TSX Composite Index (Canada),^GSPTSE
+IPSA (Chile),^IPSA
+Indice de Precios y Cotizaciones (IPC) Mexico,^MXX
+NYSE Arca Major Market Index,XMI.TO
+CBOE Volatility Index (VIX),^VIX
+Dow Jones Industrial Average,^DJI
+Dow Jones Transportation Average,^DJT
+Dow Jones Utility Average,^DJU
+Nasdaq Composite,^IXIC
+Nasdaq-100,^NDX
+Russell 1000,^RUI
+Russell 2000,^RUT
+Russell 3000,^RUA
+Russell MidCap,IWR
+S&P 100,^OEX
+S&P 500,^GSPC
+S&P MidCap 400,^MID
+S&P SmallCap 600,IJR
+Wilshire 5000,^W5000
+SSE Composite Index (China),000001.SS
+SZSE Component Index (China),399001.SZ
+CSI 300 Index (China),000300.SS
+SSE 50 Index (China),000016.SS
+Hang Seng Index (Hong Kong),^HSI
+BSE SENSEX (India),^BSESN
+NIFTY 50 (India),^NSEI
+NIFTY Next 50 (India),^NSMIDCP
+IDX Composite (Indonesia),^JKSE
+Nikkei 225 (Japan),^N225
+TOPIX (Japan),TPX.F
+FTSE Bursa Malaysia KLCI,^KLSE
+Tadawul All-Share Index (Saudi Arabia),^TASI.SR
+Straits Times Index (STI) Singapore,^STI
+KOSPI (South Korea),^KS11
+TAIEX (Taiwan),^TWII
+SET Index (Thailand),^SET.BK
+BIST 100 (Turkey),XU100.IS
+All Ordinaries (Australia),^AORD
+S&P/ASX 200 (Australia),^AXJO
+S&P/ASX 300 (Australia),^AXKO
+S&P/NZX 50 (New Zealand),^NZ50
+EURO STOXX 50,^STOXX50E
+STOXX Europe 600,^STOXX
+EGX 30 Index (Egypt),^CASE30
+ATX (Austria),^ATX
+BEL 20 (Belgium),^BFX
+OMX Copenhagen 25 (Denmark),^OMXC25
+OMX Helsinki 25 (Finland),^OMXH25
+CAC 40 (France),^FCHI
+CAC Next 20 (France),^CN20
+SBF 120 (France),^SBF120
+DAX (Germany),^GDAXI
+MDAX (Germany),^MDAXI
+TecDAX (Germany),^TECDAX
+ISEQ 20 (Ireland),^ISEQ
+FTSE MIB (Italy),FTSEMIB.MI
+AEX (Netherlands),^AEX
+AMX (Netherlands),^AMX
+PSI-20 (Portugal),PSI20.LS
+IBEX 35 (Spain),^IBEX
+OMX Stockholm 30 (Sweden),^OMX
+Swiss Market Index (SMI),^SSMI
+FTSE 100 Index (UK),^FTSE
+FTSE MID 250 Index (UK),^FTMC
+FTSE All-Share Index (UK),^FTAS
+Amex Oil Index (Energy),^XOI
+PHLX Semiconductor Sector (Electronics),^SOX
+HUI Gold Index (Metals),^HUI
+Philadelphia Gold and Silver Index (Metals),^XAU
+Palisades Water Index (ZWI),PHO

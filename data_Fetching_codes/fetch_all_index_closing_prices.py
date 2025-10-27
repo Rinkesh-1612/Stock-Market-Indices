@@ -1,147 +1,155 @@
 import yfinance as yf
 import pandas as pd
-import requests
-from bs4 import BeautifulSoup
 import logging
-import re
+from collections import OrderedDict
 
 # --- Configuration ---
-# Configure logging to see progress and handle errors gracefully
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# The source of truth for all indices
-WIKI_URL = "https://en.wikipedia.org/wiki/List_of_stock_market_indices"
-
-# Desired time period and output file
 PERIOD = "3y"
 INTERVAL = "1d"
-OUTPUT_CSV = "all_world_indices_3y_daily.csv"
+OUTPUT_CSV = "global_indices_master_3y_daily.csv"
+FAILED_LOG_FILE = "failed_to_fetch_indices.txt"
 
+# --- The Comprehensive, Manually Curated Dictionary of World Indices ---
+# Transcribed from your screenshot and mapped to yfinance tickers.
+INDEX_TICKERS = OrderedDict([
+    # == Global Indices ==
+    ("Dow Jones Global Titans 50", "^DJGT"),
+    ("FTSE All-World", "^FTAW"),
+    ("S&P Global 100", "^SPG100"),
+    ("S&P Global 1200", "^SPG1200"),
+    ("The Global Dow", "^GDOW"),
+    ("MSCI World", "URTH"),  # Using a major ETF as a reliable proxy for the index
+    ("MSCI EAFE", "EFA"),    # ETF proxy for Europe, Australasia, Far East
+    
+    # == Regional Indices ==
+    ("S&P Asia 50", "^SPAS50"),
+    ("EURO STOXX 50", "^STOXX50E"),
+    ("STOXX Europe 600", "^STOXX"),
+    ("S&P Europe 350", "^SPE350"),
+    ("S&P Latin America 40", "^SPLAC"),
 
-def scrape_all_index_tickers():
+    # == Americas ==
+    ("S&P 500 (USA)", "^GSPC"),
+    ("Dow Jones Industrial Average (USA)", "^DJI"),
+    ("NASDAQ Composite (USA)", "^IXIC"),
+    ("Russell 2000 (USA)", "^RUT"),
+    ("CBOE Volatility Index (VIX)", "^VIX"),
+    ("MERVAL (Argentina)", "^MERV"),
+    ("Bovespa Index (Brazil)", "^BVSP"),
+    ("S&P/TSX Composite (Canada)", "^GSPTSE"),
+    ("IPSA (Chile)", "^IPSA"),
+    ("COLCAP (Colombia)", "^COLCAP"),
+    ("IPC (Mexico)", "^MXX"),
+    ("S&P/BVL Peru General", "^SPBLPGPT"),
+    ("IBC (Venezuela)", "^IBC"),
+
+    # == Asia-Pacific ==
+    ("S&P/ASX 200 (Australia)", "^AXJO"),
+    ("All Ordinaries (Australia)", "^AORD"),
+    ("SSE Composite (China)", "000001.SS"),
+    ("CSI 300 (China)", "000300.SS"),
+    ("SZSE Component (China)", "399001.SZ"),
+    ("Hang Seng (Hong Kong)", "^HSI"),
+    ("Nifty 50 (India)", "^NSEI"),
+    ("BSE SENSEX (India)", "^BSESN"),
+    ("Jakarta Composite (Indonesia)", "^JKSE"),
+    ("TA-125 (Israel)", "^TA125"),
+    ("Nikkei 225 (Japan)", "^N225"),
+    ("TOPIX (Japan)", "^TPX"),
+    ("KLCI (Malaysia)", "^KLSE"),
+    ("S&P/NZX 50 (New Zealand)", "^NZ50"),
+    ("KSE 100 (Pakistan)", "^KSE"),
+    ("PSEi (Philippines)", "^PSEI"),
+    ("Tadawul All-Share (Saudi Arabia)", "^TASI.SR"),
+    ("Straits Times Index (Singapore)", "^STI"),
+    ("KOSPI (South Korea)", "^KS11"),
+    ("CSE All-Share (Sri Lanka)", "^CSE"),
+    ("TAIEX (Taiwan)", "^TWII"),
+    ("SET Index (Thailand)", "^SET.BK"),
+    ("VN-Index (Vietnam)", "^VNINDEX"),
+
+    # == Europe, Middle East & Africa ==
+    ("ATX (Austria)", "^ATX"),
+    ("BEL 20 (Belgium)", "^BFX"),
+    ("CROBEX (Croatia)", "^CROBEX"),
+    ("PX Index (Czech Republic)", "^PX"),
+    ("OMX Copenhagen 25 (Denmark)", "^OMXC25"),
+    ("EGX 30 (Egypt)", "^CASE30"),
+    ("OMX Helsinki 25 (Finland)", "^OMXH25"),
+    ("CAC 40 (France)", "^FCHI"),
+    ("DAX (Germany)", "^GDAXI"),
+    ("MDAX (Germany)", "MDAXI.DE"),
+    ("TecDAX (Germany)", "^TECXP"),
+    ("Athex Composite (Greece)", "^ATG"),
+    ("BUX (Hungary)", "^BUX"),
+    ("ISEQ 20 (Ireland)", "^ISEQ"),
+    ("FTSE MIB (Italy)", "^FTSEMIB"),
+    ("MASI (Morocco)", "^MSI"),
+    ("AEX (Netherlands)", "^AEX"),
+    ("OBX (Norway)", "^OBX"),
+    ("WIG20 (Poland)", "^WIG20"),
+    ("PSI 20 (Portugal)", "^PSI20"),
+    ("MOEX (Russia)", "^IMOEX.ME"), # Note: Data may be unreliable/unavailable
+    ("JSE Top 40 (South Africa)", "^JTOPI"),
+    ("IBEX 35 (Spain)", "^IBEX"),
+    ("OMX Stockholm 30 (Sweden)", "^OMX"),
+    ("Swiss Market Index (SMI)", "^SSMI"),
+    ("BIST 100 (Turkey)", "XU100.IS"),
+    ("FTSE 100 (UK)", "^FTSE"),
+    ("FTSE 250 (UK)", "^FTMC"),
+])
+
+def fetch_index_data(tickers_dict):
     """
-    Scrapes the Wikipedia page for a comprehensive list of all stock market indices
-    and their corresponding ticker symbols.
-    
-    Returns:
-        A pandas DataFrame with 'Index' names and their cleaned 'Ticker' symbols.
+    Fetches historical closing prices for a dictionary of index tickers.
+    Separates successful fetches from failures and saves them.
     """
-    logging.info(f"Scraping index list from: {WIKI_URL}")
-    try:
-        response = requests.get(WIKI_URL, headers={'User-Agent': 'Mozilla/5.0'}, timeout=15)
-        response.raise_for_status()
-    except requests.RequestException as e:
-        logging.error(f"Failed to fetch Wikipedia page: {e}")
-        return None
+    logging.info(f"--- Starting data fetch for {len(tickers_dict)} global indices ---")
+    
+    successful_dataframes = []
+    failed_indices = []
 
-    soup = BeautifulSoup(response.text, 'lxml')
-    
-    # Find all tables with the 'wikitable' class, which contain the indices
-    tables = soup.find_all('table', {'class': 'wikitable'})
-    
-    if not tables:
-        logging.error("No wikitables found on the page. The page structure might have changed.")
-        return None
-        
-    all_indices_df = pd.DataFrame()
-    
-    # Use pandas to read all tables and concatenate them
-    for table in tables:
+    total_indices = len(tickers_dict)
+    for i, (name, ticker) in enumerate(tickers_dict.items()):
         try:
-            df = pd.read_html(str(table))[0]
-            all_indices_df = pd.concat([all_indices_df, df], ignore_index=True)
+            logging.info(f"Fetching ({i+1}/{total_indices}): {name} ({ticker})")
+            data = yf.download(ticker, period=PERIOD, interval=INTERVAL, auto_adjust=True, progress=False)
+            
+            if data.empty:
+                raise ValueError("No data returned from yfinance (likely an invalid or delisted ticker).")
+                
+            close_price_series = data['Close']
+            close_price_series.name = name  # Set the column name to the full index name
+            
+            successful_dataframes.append(close_price_series)
+
         except Exception as e:
-            logging.warning(f"Could not parse a table. Skipping it. Error: {e}")
+            logging.warning(f"Could not fetch data for '{name}' ({ticker}).")
+            failed_indices.append((name, ticker))
 
-    # --- Data Cleaning and Ticker Standardization ---
-
-    # We need the 'Index' and 'Ticker symbol' columns. Let's find them.
-    # Column names can vary slightly, so we search for them flexibly.
-    ticker_col = next((col for col in all_indices_df.columns if 'Ticker' in col), None)
-    index_col = 'Index'
-
-    if not ticker_col or index_col not in all_indices_df.columns:
-        logging.error("Could not find 'Index' or 'Ticker symbol' columns in the scraped data.")
-        return None
-
-    # Keep only the essential columns and drop rows with no ticker
-    all_indices_df = all_indices_df[[index_col, ticker_col]].copy()
-    all_indices_df.rename(columns={ticker_col: 'Ticker', index_col: 'Index'}, inplace=True)
-    all_indices_df.dropna(subset=['Ticker'], inplace=True)
-    all_indices_df = all_indices_df[all_indices_df['Ticker'] != '–'] # Remove empty placeholders
-
-    # Clean the ticker symbols
-    def clean_ticker(ticker_str):
-        # Remove citations like [1], [a], etc.
-        cleaned = re.sub(r'\[.*?\]', '', ticker_str)
-        # Take the first ticker if multiple are listed
-        cleaned = cleaned.split(',')[0].strip()
-        # Yahoo Finance often uses a caret '^' for indices. Add it if not present.
-        if not cleaned.startswith('^'):
-            cleaned = '^' + cleaned
-        return cleaned
-
-    all_indices_df['Ticker'] = all_indices_df['Ticker'].apply(clean_ticker)
-    
-    # Remove any duplicates that may have arisen
-    all_indices_df.drop_duplicates(subset=['Ticker'], inplace=True)
-    
-    logging.info(f"Successfully scraped and cleaned {len(all_indices_df)} unique index tickers.")
-    return all_indices_df
-
-
-def fetch_index_data(indices_df):
-    """
-    Fetches historical closing prices for the provided list of index tickers.
-    
-    Args:
-        indices_df: A DataFrame containing 'Index' names and 'Ticker' symbols.
-    """
-    if indices_df is None or indices_df.empty:
-        logging.error("No index data to fetch. Aborting.")
-        return
-
-    tickers_list = indices_df['Ticker'].tolist()
-    logging.info(f"Attempting to download {len(tickers_list)} indices for the period '{PERIOD}'...")
-
-    # yfinance's download function is highly optimized for batch requests
-    data = yf.download(tickers_list, period=PERIOD, interval=INTERVAL, auto_adjust=True)
-
-    if data.empty:
-        logging.error("No data was returned from Yahoo Finance. Check tickers or network connection.")
-        return
-
-    # We only care about the closing price
-    closing_prices = data['Close']
-    
-    # Drop columns that are completely empty (for tickers yfinance couldn't find)
-    closing_prices.dropna(axis=1, how='all', inplace=True)
-    
-    # Create a mapping from Ticker -> Index Name for readable column headers
-    ticker_to_name_map = pd.Series(indices_df.Index.values, index=indices_df.Ticker).to_dict()
-    
-    # Rename columns from '^DJI' to 'Dow Jones Industrial Average'
-    closing_prices.rename(columns=ticker_to_name_map, inplace=True)
-    
-    logging.info(f"Successfully downloaded data for {len(closing_prices.columns)} indices.")
-
-    # Save the final, clean DataFrame to a CSV file
-    try:
-        closing_prices.to_csv(OUTPUT_CSV)
-        logging.info(f"Data successfully saved to '{OUTPUT_CSV}'")
-        print("\n--- Data Fetch Complete! ---")
-        print(f"Saved to: {OUTPUT_CSV}")
+    # --- Process and Save Successful Data ---
+    if successful_dataframes:
+        final_df = pd.concat(successful_dataframes, axis=1)
+        final_df = final_df.reindex(sorted(final_df.columns), axis=1) # Sort columns alphabetically
+        final_df.to_csv(OUTPUT_CSV)
+        logging.info(f"Successfully fetched data for {len(successful_dataframes)} indices.")
+        print(f"\n✅ Data for {len(successful_dataframes)} indices saved to '{OUTPUT_CSV}'")
         print("\n--- Sample of the final data (last 5 days): ---")
-        print(closing_prices.tail())
-    except Exception as e:
-        logging.error(f"Failed to save data to CSV: {e}")
+        print(final_df.tail())
+    else:
+        print("\n❌ No data was successfully fetched for any index.")
 
-
-def main():
-    """Main function to run the scraper and data fetcher."""
-    indices_df = scrape_all_index_tickers()
-    fetch_index_data(indices_df)
+    # --- Log Failed Indices ---
+    if failed_indices:
+        logging.info(f"Logging {len(failed_indices)} failed indices to '{FAILED_LOG_FILE}'")
+        with open(FAILED_LOG_FILE, 'w') as f:
+            f.write("The following indices could not be fetched from Yahoo Finance:\n")
+            f.write("-------------------------------------------------------------\n")
+            for name, ticker in failed_indices:
+                f.write(f"- {name} (tried ticker: {ticker})\n")
+        print(f"\n⚠️ Could not fetch {len(failed_indices)} indices. See '{FAILED_LOG_FILE}' for the complete list.")
 
 
 if __name__ == "__main__":
-    main()
+    fetch_index_data(INDEX_TICKERS)

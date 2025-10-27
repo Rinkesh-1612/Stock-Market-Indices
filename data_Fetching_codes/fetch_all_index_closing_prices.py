@@ -7,26 +7,26 @@ from collections import OrderedDict
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 PERIOD = "3y"
 INTERVAL = "1d"
-OUTPUT_CSV = "global_indices_master_3y_daily.csv"
+OUTPUT_CSV = "global_indices_master_3y_daily_with_dowjone.csv"
 FAILED_LOG_FILE = "failed_to_fetch_indices.txt"
 
-# --- The Comprehensive, Manually Curated Dictionary of World Indices ---
-# Transcribed from your screenshot and mapped to yfinance tickers.
+# --- The Comprehensive, Manually Curated Dictionary of World Indices (v4 - Final & Most Robust) ---
+# Replaced the unreliable ^GDOW with the more stable Dow Jones Global Index ^DJW.
+# Removed KSE (Pakistan) due to persistent poor data quality.
 INDEX_TICKERS = OrderedDict([
     # == Global Indices ==
     ("Dow Jones Global Titans 50", "^DJGT"),
-    ("FTSE All-World", "^FTAW"),
-    ("S&P Global 100", "^SPG100"),
+    ("FTSE All-World", "ACWI"),        # ETF Proxy (iShares MSCI ACWI) is far more reliable
+    ("S&P Global 100", "IOO"),         # Using iShares ETF for reliability
     ("S&P Global 1200", "^SPG1200"),
-    ("The Global Dow", "^GDOW"),
-    ("MSCI World", "URTH"),  # Using a major ETF as a reliable proxy for the index
-    ("MSCI EAFE", "EFA"),    # ETF proxy for Europe, Australasia, Far East
-    
+    ("Dow Jones Global Index", "^DJW"),# <-- CHANGED: Replaced unreliable ^GDOW with stable ^DJW
+    ("MSCI World", "URTH"),            # ETF proxy for developed markets
+    ("MSCI EAFE", "EFA"),              # ETF proxy for Europe, Australasia, Far East
+
     # == Regional Indices ==
-    ("S&P Asia 50", "^SPAS50"),
+    ("S&P Asia 50", "AIA"),            # ETF Proxy (iShares Asia 50)
     ("EURO STOXX 50", "^STOXX50E"),
     ("STOXX Europe 600", "^STOXX"),
-    ("S&P Europe 350", "^SPE350"),
     ("S&P Latin America 40", "^SPLAC"),
 
     # == Americas ==
@@ -39,10 +39,9 @@ INDEX_TICKERS = OrderedDict([
     ("Bovespa Index (Brazil)", "^BVSP"),
     ("S&P/TSX Composite (Canada)", "^GSPTSE"),
     ("IPSA (Chile)", "^IPSA"),
-    ("COLCAP (Colombia)", "^COLCAP"),
+    ("COLCAP (Colombia)", "ICOL"),      # ETF Proxy (iShares MSCI Colombia)
     ("IPC (Mexico)", "^MXX"),
-    ("S&P/BVL Peru General", "^SPBLPGPT"),
-    ("IBC (Venezuela)", "^IBC"),
+    ("S&P/BVL Peru General", "EPU"),   # ETF Proxy (iShares MSCI Peru)
 
     # == Asia-Pacific ==
     ("S&P/ASX 200 (Australia)", "^AXJO"),
@@ -54,44 +53,38 @@ INDEX_TICKERS = OrderedDict([
     ("Nifty 50 (India)", "^NSEI"),
     ("BSE SENSEX (India)", "^BSESN"),
     ("Jakarta Composite (Indonesia)", "^JKSE"),
-    ("TA-125 (Israel)", "^TA125"),
+    ("TA-125 (Israel)", "^TA125.TA"),
     ("Nikkei 225 (Japan)", "^N225"),
-    ("TOPIX (Japan)", "^TPX"),
+    ("TOPIX (Japan)", "EWJ"),          # ETF Proxy (iShares MSCI Japan)
     ("KLCI (Malaysia)", "^KLSE"),
     ("S&P/NZX 50 (New Zealand)", "^NZ50"),
-    ("KSE 100 (Pakistan)", "^KSE"),
-    ("PSEi (Philippines)", "^PSEI"),
+    ("PSEi (Philippines)", "^PSI"),    # Correct Ticker
     ("Tadawul All-Share (Saudi Arabia)", "^TASI.SR"),
     ("Straits Times Index (Singapore)", "^STI"),
     ("KOSPI (South Korea)", "^KS11"),
-    ("CSE All-Share (Sri Lanka)", "^CSE"),
     ("TAIEX (Taiwan)", "^TWII"),
     ("SET Index (Thailand)", "^SET.BK"),
-    ("VN-Index (Vietnam)", "^VNINDEX"),
+    ("VN-Index (Vietnam)", "^VNI"),    # Correct Ticker
 
     # == Europe, Middle East & Africa ==
     ("ATX (Austria)", "^ATX"),
     ("BEL 20 (Belgium)", "^BFX"),
-    ("CROBEX (Croatia)", "^CROBEX"),
-    ("PX Index (Czech Republic)", "^PX"),
     ("OMX Copenhagen 25 (Denmark)", "^OMXC25"),
     ("EGX 30 (Egypt)", "^CASE30"),
     ("OMX Helsinki 25 (Finland)", "^OMXH25"),
     ("CAC 40 (France)", "^FCHI"),
     ("DAX (Germany)", "^GDAXI"),
-    ("MDAX (Germany)", "MDAXI.DE"),
-    ("TecDAX (Germany)", "^TECXP"),
-    ("Athex Composite (Greece)", "^ATG"),
-    ("BUX (Hungary)", "^BUX"),
+    ("MDAX (Germany)", "^MDAXI"),
+    ("TecDAX (Germany)", "^TECDAX"),
+    ("Athex Composite (Greece)", "GREK"), # ETF Proxy (Global X MSCI Greece)
     ("ISEQ 20 (Ireland)", "^ISEQ"),
-    ("FTSE MIB (Italy)", "^FTSEMIB"),
-    ("MASI (Morocco)", "^MSI"),
+    ("FTSE MIB (Italy)", "EWI"),       # ETF Proxy (iShares MSCI Italy)
     ("AEX (Netherlands)", "^AEX"),
-    ("OBX (Norway)", "^OBX"),
-    ("WIG20 (Poland)", "^WIG20"),
-    ("PSI 20 (Portugal)", "^PSI20"),
-    ("MOEX (Russia)", "^IMOEX.ME"), # Note: Data may be unreliable/unavailable
-    ("JSE Top 40 (South Africa)", "^JTOPI"),
+    ("OBX (Norway)", "NORW"),          # ETF Proxy (Global X MSCI Norway)
+    ("WIG20 (Poland)", "EPOL"),        # ETF Proxy (iShares MSCI Poland)
+    ("PSI 20 (Portugal)", "PGAL"),     # ETF Proxy (Global X MSCI Portugal)
+    ("MOEX (Russia)", "IMOEX.ME"),     # NOTE: Data stops around Feb 2022
+    ("JSE Top 40 (South Africa)", "^J201.JO"),
     ("IBEX 35 (Spain)", "^IBEX"),
     ("OMX Stockholm 30 (Sweden)", "^OMX"),
     ("Swiss Market Index (SMI)", "^SSMI"),
@@ -99,6 +92,7 @@ INDEX_TICKERS = OrderedDict([
     ("FTSE 100 (UK)", "^FTSE"),
     ("FTSE 250 (UK)", "^FTMC"),
 ])
+import time # Import the time library for a small delay
 
 def fetch_index_data(tickers_dict):
     """
@@ -106,7 +100,7 @@ def fetch_index_data(tickers_dict):
     Separates successful fetches from failures and saves them.
     """
     logging.info(f"--- Starting data fetch for {len(tickers_dict)} global indices ---")
-    
+
     successful_dataframes = []
     failed_indices = []
 
@@ -114,31 +108,50 @@ def fetch_index_data(tickers_dict):
     for i, (name, ticker) in enumerate(tickers_dict.items()):
         try:
             logging.info(f"Fetching ({i+1}/{total_indices}): {name} ({ticker})")
-            data = yf.download(ticker, period=PERIOD, interval=INTERVAL, auto_adjust=True, progress=False)
-            
+            data = yf.Ticker(ticker).history(period=PERIOD, interval=INTERVAL, auto_adjust=True)
+
             if data.empty:
                 raise ValueError("No data returned from yfinance (likely an invalid or delisted ticker).")
-                
+
             close_price_series = data['Close']
-            close_price_series.name = name  # Set the column name to the full index name
             
+            # --- THIS IS THE FIX ---
+            # The index from yfinance is timezone-aware. To align different markets
+            # (e.g., Tokyo close vs. New York close) on the same calendar day, we
+            # must normalize the index by removing the time and timezone info.
+            close_price_series.index = pd.to_datetime(close_price_series.index.date)
+            
+            close_price_series.name = name
             successful_dataframes.append(close_price_series)
+            
+            # Add a small delay to be polite to Yahoo's servers and avoid getting blocked
+            time.sleep(0.1) 
 
         except Exception as e:
-            logging.warning(f"Could not fetch data for '{name}' ({ticker}).")
+            logging.warning(f"Could not fetch data for '{name}' ({ticker}). Reason: {e}")
             failed_indices.append((name, ticker))
 
     # --- Process and Save Successful Data ---
     if successful_dataframes:
-        final_df = pd.concat(successful_dataframes, axis=1)
+        # Use 'outer' join to handle different market holidays correctly.
+        # This ensures that if one market is open while another is closed,
+        # the date is kept and the closed market shows NaN.
+        final_df = pd.concat(successful_dataframes, axis=1, join='outer')
+        
+        final_df.index.name = 'Date'
+        final_df = final_df.sort_index() # Sort by date to ensure chronological order
         final_df = final_df.reindex(sorted(final_df.columns), axis=1) # Sort columns alphabetically
+        
+        # Optional: Forward-fill NaN values for markets that were closed on holidays
+        # final_df = final_df.fillna(method='ffill')
+        
         final_df.to_csv(OUTPUT_CSV)
         logging.info(f"Successfully fetched data for {len(successful_dataframes)} indices.")
-        print(f"\n✅ Data for {len(successful_dataframes)} indices saved to '{OUTPUT_CSV}'")
+        print(f"\n Data for {len(successful_dataframes)} indices saved to '{OUTPUT_CSV}'")
         print("\n--- Sample of the final data (last 5 days): ---")
         print(final_df.tail())
     else:
-        print("\n❌ No data was successfully fetched for any index.")
+        print("\nNo data was successfully fetched for any index.")
 
     # --- Log Failed Indices ---
     if failed_indices:
@@ -148,8 +161,7 @@ def fetch_index_data(tickers_dict):
             f.write("-------------------------------------------------------------\n")
             for name, ticker in failed_indices:
                 f.write(f"- {name} (tried ticker: {ticker})\n")
-        print(f"\n⚠️ Could not fetch {len(failed_indices)} indices. See '{FAILED_LOG_FILE}' for the complete list.")
-
+        print(f"\n Could not fetch {len(failed_indices)} indices. See '{FAILED_LOG_FILE}' for the complete list.")
 
 if __name__ == "__main__":
     fetch_index_data(INDEX_TICKERS)

@@ -1,0 +1,224 @@
+Company Name,Raw Ticker,Cleaned Ticker
+Advantage Energy Ltd.,AAV,AAV
+Agnico Eagle Mines Limited,AEM,AEM
+Air Canada,AC,AC
+Alamos Gold Inc.,AGI,AGI
+Algoma Steel Group Inc.,ASTL,ASTL
+Algonquin Power & Utilities Corp.,AQN,AQN
+Alimentation Couche-Tard Inc.,ATD,ATD
+Allied Properties Real Estate Investment Trust,AP.UN,AP.UN
+AltaGas Ltd.,ALA,ALA
+Altus Group Limited,AIF,AIF
+ARC Resources Ltd.,ARX,ARX
+Aritzia Inc.,ATZ,ATZ
+ATCO Ltd.,ACO.X,ACO.X
+Athabasca Oil Corporation,ATH,ATH
+AtkinsRéalis Group Inc.,ATRL,ATRL
+ATS Corporation,ATS,ATS
+Aya Gold & Silver Inc.,AYA,AYA
+B2Gold Corp.,BTO,BTO
+Badger Infrastructure Solutions Ltd.,BDGI,BDGI
+Bank of Montreal,BMO,BMO
+Bank of Nova Scotia,BNS,BNS
+Barrick Gold Corporation,ABX,ABX
+Bausch Health Companies Inc.,BHC,BHC
+Baytex Energy Corp.,BTE,BTE
+BCE Inc.,BCE,BCE
+Birchcliff Energy Ltd.,BIR,BIR
+Bird Construction Inc.,BDT,BDT
+BlackBerry Limited,BB,BB
+Boardwalk Real Estate Investment Trust,BEI.UN,BEI.UN
+Bombardier Inc.,BBD.B,BBD.B
+Boralex Inc.,BLX,BLX
+Boyd Group Services Inc.,BYD,BYD
+Brookfield Asset Management Ltd.,BAM,BAM
+Brookfield Business Partners L.P.,BBU.UN,BBU.UN
+Brookfield Corporation,BN,BN
+Brookfield Infrastructure Partners L.P.,BIP.UN,BIP.UN
+Brookfield Renewable Partners L.P.,BEP.UN,BEP.UN
+BRP Inc.,DOO,DOO
+CAE Inc.,CAE,CAE
+Calibre Mining Corp.,CXB,CXB
+Cameco Corporation,CCO,CCO
+Canadian Apartment Properties Real Estate Investment Trust,CAR.UN,CAR.UN
+Canadian Imperial Bank of Commerce,CM,CM
+Canadian National Railway Company,CNR,CNR
+Canadian Natural Resources Limited,CNQ,CNQ
+Canadian Pacific Kansas City Limited,CP,CP
+Canadian Tire Corporation Limited,CTC.A,CTC.A
+Canadian Utilities Limited,CU,CU
+Canadian Western Bank,CWB,CWB
+Capital Power Corporation,CPX,CPX
+Capstone Copper Corp.,CS,CS
+Cargojet Inc.,CJT,CJT
+CCL Industries Inc.,CCL.B,CCL.B
+Celestica Inc.,CLS,CLS
+Cenovus Energy Inc.,CVE,CVE
+Centerra Gold Inc.,CG,CG
+CES Energy Solutions Corp.,CEU,CEU
+CGI Inc.,GIB.A,GIB.A
+Chartwell Retirement Residences,CSH.UN,CSH.UN
+Choice Properties Real Estate Investment Trust,CHP.UN,CHP.UN
+CI Financial Corp.,CIX,CIX
+Cogeco Communications Inc.,CCA,CCA
+Colliers International Group Inc.,CIGI,CIGI
+Constellation Software Inc.,CSU,CSU
+Crombie Real Estate Investment Trust,CRR.UN,CRR.UN
+CT Real Estate Investment Trust,CRT.UN,CRT.UN
+Definity Financial Corporation,DFY,DFY
+Denison Mines Corp.,DML,DML
+Descartes Systems Group Inc.,DSG,DSG
+Dollarama Inc.,DOL,DOL
+Dream Industrial Real Estate Investment Trust,DIR.UN,DIR.UN
+Dundee Precious Metals Inc.,DPM,DPM
+Eldorado Gold Corporation,ELD,ELD
+Element Fleet Management Corp.,EFN,EFN
+Emera Incorporated,EMA,EMA
+Empire Company Limited,EMP.A,EMP.A
+Enbridge Inc.,ENB,ENB
+Energy Fuels Inc.,EFR,EFR
+Enghouse Systems Limited,ENGH,ENGH
+EQB Inc.,EQB,EQB
+Equinox Gold Corp.,EQX,EQX
+Ero Copper Corp.,ERO,ERO
+Exchange Income Corporation,EIF,EIF
+Fairfax Financial Holdings Limited,FFH,FFH
+Filo Corp.,FIL,FIL
+Finning International Inc.,FTT,FTT
+First Capital Real Estate Investment Trust,FCR.UN,FCR.UN
+First Majestic Silver Corp.,AG,AG
+First Quantum Minerals Ltd.,FM,FM
+FirstService Corporation,FSV,FSV
+Fortis Inc.,FTS,FTS
+Fortuna Mining Corp.,FVI,FVI
+Franco-Nevada Corporation,FNV,FNV
+Freehold Royalties Ltd.,FRU,FRU
+George Weston Limited,WN,WN
+GFL Environmental Inc.,GFL,GFL
+Gibson Energy Inc.,GEI,GEI
+Gildan Activewear Inc.,GIL,GIL
+goeasy Ltd.,GSY,GSY
+Granite Real Estate Investment Trust,GRT.UN,GRT.UN
+Great-West Lifeco Inc.,GWO,GWO
+H&R Real Estate Investment Trust,HR.UN,HR.UN
+Headwater Exploration Inc.,HWX,HWX
+Hudbay Minerals Inc.,HBM,HBM
+Hydro One Limited,H,H
+iA Financial Corporation Inc.,IAG,IAG
+Iamgold Corporation,IMG,IMG
+IGM Financial Inc.,IGM,IGM
+Imperial Oil Limited,IMO,IMO
+Innergex Renewable Energy Inc.,INE,INE
+Intact Financial Corporation,IFC,IFC
+Interfor Corporation,IFP,IFP
+International Petroleum Corporation,IPCO,IPCO
+InterRent Real Estate Investment Trust,IIP.UN,IIP.UN
+Ivanhoe Mines Ltd.,IVN,IVN
+Jamieson Wellness Inc.,JWEL,JWEL
+K92 Mining Inc.,KNT,KNT
+Kelt Exploration Ltd.,KEL,KEL
+Keyera Corp.,KEY,KEY
+Killam Apartment Real Estate Investment Trust,KMP.UN,KMP.UN
+Kinaxis Inc.,KXS,KXS
+Kinross Gold Corporation,K,K
+Labrador Iron Ore Royalty Corporation,LIF,LIF
+Laurentian Bank of Canada,LB,LB
+Lightspeed Commerce Inc.,LSPD,LSPD
+Linamar Corporation,LNR,LNR
+Loblaw Companies Limited,L,L
+Lundin Gold Inc.,LUG,LUG
+Lundin Mining Corporation,LUN,LUN
+MAG Silver Corp.,MAG,MAG
+Magna International Inc.,MG,MG
+Manulife Financial Corporation,MFC,MFC
+Maple Leaf Foods Inc.,MFI,MFI
+Mattr Corp.,MATR,MATR
+MDA Space Ltd.,MDA,MDA
+MEG Energy Corp.,MEG,MEG
+Methanex Corporation,MX,MX
+Metro Inc.,MRU,MRU
+MTY Food Group Inc.,MTY,MTY
+Mullen Group Ltd.,MTL,MTL
+National Bank of Canada,,nan
+New Gold Inc.,NGD,NGD
+NexGen Energy Ltd.,NXE,NXE
+NFI Group Inc.,NFI,NFI
+North West Company Inc.,NWC,NWC
+Northland Power Inc.,NPI,NPI
+NorthWest Healthcare Properties Real Estate Investment Trust,NWH.UN,NWH.UN
+NovaGold Resources Inc.,NG,NG
+Nutrien Ltd.,NTR,NTR
+Nuvei Corporation,NVEI,NVEI
+NuVista Energy Ltd.,NVA,NVA
+OceanaGold Corporation,OGC,OGC
+Onex Corporation,ONEX,ONEX
+Open Text Corporation,OTEX,OTEX
+Orla Mining Ltd.,OLA,OLA
+Osisko Gold Royalties Ltd.,OR,OR
+Osisko Mining Inc.,OSK,OSK
+Pan American Silver Corp.,PAAS,PAAS
+Paramount Resources Ltd.,POU,POU
+Parex Resources Inc.,PXT,PXT
+Parkland Corporation,PKI,PKI
+Pason Systems Inc.,PSI,PSI
+Pembina Pipeline Corporation,PPL,PPL
+Pet Valu Holdings Ltd.,PET,PET
+Peyto Exploration & Development Corp.,PEY,PEY
+Power Corporation of Canada,POW,POW
+PrairieSky Royalty Ltd.,PSK,PSK
+Precision Drilling Corporation,PD,PD
+Premium Brands Holdings Corporation,PBH,PBH
+Primaris Real Estate Investment Trust,PMZ.UN,PMZ.UN
+Primo Water Corporation,PRMW,PRMW
+Quebecor Inc.,QBR.B,QBR.B
+Restaurant Brands International Inc.,QSR,QSR
+Richelieu Hardware Ltd.,RCH,RCH
+RioCan Real Estate Investment Trust,REI.UN,REI.UN
+Rogers Communications Inc.,RCI.B,RCI.B
+Royal Bank of Canada,RY,RY
+Russel Metals Inc.,RUS,RUS
+Sandstorm Gold Ltd.,SSL,SSL
+Saputo Inc.,SAP,SAP
+Seabridge Gold Inc.,SEA,SEA
+Secure Energy Services Inc.,SES,SES
+Shopify Inc.,SHOP,SHOP
+Sienna Senior Living Inc.,SIA,SIA
+SilverCrest Metals Inc.,SIL,SIL
+SmartCentres Real Estate Investment Trust,SRU.UN,SRU.UN
+South Bow Corporation,SOBO,SOBO
+Spin Master Corp.,TOY,TOY
+Sprott Inc.,SII,SII
+SSR Mining Inc.,SSRM,SSRM
+Stantec Inc.,STN,STN
+Stelco Holdings Inc.,STLC,STLC
+Stella-Jones Inc.,SJ,SJ
+StorageVault Canada Inc.,SVI,SVI
+Sun Life Financial Inc.,SLF,SLF
+Suncor Energy Inc.,SU,SU
+Superior Plus Corp.,SPB,SPB
+Tamarack Valley Energy Ltd.,TVE,TVE
+TC Energy Corporation,TRP,TRP
+Teck Resources Limited,TECK.B,TECK.B
+Telus Corporation,T,T
+TFI International Inc.,TFII,TFII
+Thomson Reuters Corporation,TRI,TRI
+Tilray Brands Inc.,TLRY,TLRY
+TMX Group Limited,X,X
+Topaz Energy Corp.,TPZ,TPZ
+Torex Gold Resources Inc.,TXG,TXG
+Toromont Industries Ltd.,TIH,TIH
+Toronto-Dominion Bank,TD,TD
+Tourmaline Oil Corp.,TOU,TOU
+TransAlta Corporation,TA,TA
+Transcontinental Inc.,TCL.A,TCL.A
+Triple Flag Precious Metals Corp.,TFPM,TFPM
+Trisura Group Ltd.,TSU,TSU
+Veren Inc.,VRN,VRN
+Vermilion Energy Inc.,VET,VET
+Waste Connections Inc.,WCN,WCN
+Wesdome Gold Mines Ltd.,WDO,WDO
+West Fraser Timber Co. Ltd.,WFG,WFG
+Wheaton Precious Metals Corp.,WPM,WPM
+Whitecap Resources Inc.,WCP,WCP
+Winpak Ltd.,WPK,WPK
+WSP Global Inc.,WSP,WSP

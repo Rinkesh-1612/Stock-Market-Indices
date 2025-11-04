@@ -1,0 +1,72 @@
+Full Index Name,Yahoo Finance Ticker,Original Index Name
+Dow Jones Global Titans 50 Inde,^DJGT,Dow Jones Global Titans 50
+S&P GLOBAL 100 ( C ),^SPG100,S&P Global 100
+S&P GLOBAL 1200,^SPG1200,S&P Global 1200
+The Global Dow (USD),^GDOW,The Global Dow
+MERVAL,^MERV,MERVAL (Argentina)
+IBOVESPA,^BVSP,Indice Bovespa (Brazil)
+S&P/TSX Composite index,^GSPTSE,S&P/TSX Composite Index (Canada)
+S&P IPSA,^IPSA,IPSA (Chile)
+IPC MEXICO,^MXX,Indice de Precios y Cotizaciones (IPC) Mexico
+CBOE Volatility Index (VIX),^VIX,CBOE Volatility Index (VIX)
+Dow Jones Industrial Average,^DJI,Dow Jones Industrial Average
+Dow Jones Transportation Averag,^DJT,Dow Jones Transportation Average
+Dow Jones Utility Average,^DJU,Dow Jones Utility Average
+NASDAQ Composite,^IXIC,Nasdaq Composite
+NASDAQ-100,^NDX,Nasdaq-100
+Russell 1000,^RUI,Russell 1000
+ Russell 2000 Index,^RUT,Russell 2000
+Russell 3000,^RUA,Russell 3000
+S&P 100 INDEX,^OEX,S&P 100
+S&P 500,^GSPC,S&P 500
+S&P 400,^MID,S&P MidCap 400
+Wilshire 5000 Total Market Inde,^W5000,Wilshire 5000
+SSE Composite Index (China),000001.SS,SSE Composite Index (China)
+SZSE Component Index (China),399001.SZ,SZSE Component Index (China)
+CSI 300 Index,000300.SS,CSI 300 Index (China)
+SSE 50 Index,000016.SS,SSE 50 Index (China)
+HANG SENG INDEX,^HSI,Hang Seng Index (Hong Kong)
+S&P BSE SENSEX,^BSESN,BSE SENSEX (India)
+NIFTY 50,^NSEI,NIFTY 50 (India)
+NIFTY NEXT 50,^NSMIDCP,NIFTY Next 50 (India)
+IDX COMPOSITE,^JKSE,IDX Composite (Indonesia)
+Nikkei 225,^N225,Nikkei 225 (Japan)
+FTSE Bursa Malaysia KLCI,^KLSE,FTSE Bursa Malaysia KLCI
+Tadawul All Shares Index,^TASI.SR,Tadawul All-Share Index (Saudi Arabia)
+STI Index,^STI,Straits Times Index (STI) Singapore
+KOSPI Composite Index,^KS11,KOSPI (South Korea)
+TWSE Capitalization Weighted Stock Index,^TWII,TAIEX (Taiwan)
+SET_SET Index,^SET.BK,SET Index (Thailand)
+BIST 100 (Turkey),XU100.IS,BIST 100 (Turkey)
+ALL ORDINARIES,^AORD,All Ordinaries (Australia)
+S&P/ASX 200,^AXJO,S&P/ASX 200 (Australia)
+S&P/ASX 300,^AXKO,S&P/ASX 300 (Australia)
+S&P/NZX 50 INDEX GROSS ( GROSS ,^NZ50,S&P/NZX 50 (New Zealand)
+EURO STOXX 50                 I,^STOXX50E,EURO STOXX 50
+STXE 600                      I,^STOXX,STOXX Europe 600
+EGX 30 Price Return Index,^CASE30,EGX 30 Index (Egypt)
+Austrian Traded Index in EUR,^ATX,ATX (Austria)
+BEL 20,^BFX,BEL 20 (Belgium)
+OMX Copenhagen 25 Index,^OMXC25,OMX Copenhagen 25 (Denmark)
+OMX Helsinki 25,^OMXH25,OMX Helsinki 25 (Finland)
+CAC 40,^FCHI,CAC 40 (France)
+CAC Next 20,^CN20,CAC Next 20 (France)
+SBF 120,^SBF120,SBF 120 (France)
+DAX P,^GDAXI,DAX (Germany)
+MDAX                          P,^MDAXI,MDAX (Germany)
+TecDAX                        P,^TECDAX,TecDAX (Germany)
+ISEQ All Share,^ISEQ,ISEQ 20 (Ireland)
+FTSE MIB (Italy),FTSEMIB.MI,FTSE MIB (Italy)
+AEX (Netherlands),^AEX,AEX (Netherlands)
+AMX (Netherlands),^AMX,AMX (Netherlands)
+PSI-20 (Portugal),PSI20.LS,PSI-20 (Portugal)
+IBEX 35...,^IBEX,IBEX 35 (Spain)
+OMX Stockholm 30 (Sweden),^OMX,OMX Stockholm 30 (Sweden)
+SMI PR,^SSMI,Swiss Market Index (SMI)
+FTSE 100,^FTSE,FTSE 100 Index (UK)
+FTSE 250,^FTMC,FTSE MID 250 Index (UK)
+UK FTSE All Share,^FTAS,FTSE All-Share Index (UK)
+Amex Oil Index (Energy),^XOI,Amex Oil Index (Energy)
+PHLX Semiconductor,^SOX,PHLX Semiconductor Sector (Electronics)
+HUI Gold Index (Metals),^HUI,HUI Gold Index (Metals)
+PHLX Gold/Silver Sector,^XAU,Philadelphia Gold and Silver Index (Metals)

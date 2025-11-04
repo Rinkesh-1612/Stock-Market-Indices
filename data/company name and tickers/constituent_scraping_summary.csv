@@ -1,0 +1,33 @@
+Index Name,Status,Scraped Count,Source URL
+S&P GLOBAL 1200,Skipped (No reliable list page),0,N/A
+MERVAL,Failed,0,https://en.wikipedia.org/wiki/MERVAL
+IPC MEXICO,Success (Table),34,https://en.wikipedia.org/wiki/Indice_de_Precios_y_Cotizaciones
+CBOE Volatility Index (VIX),"Skipped (Volatility measure, no companies)",0,N/A
+NASDAQ Composite,Proxy (^NDX),0,N/A
+ Russell 2000 Index,Success (iShares),1970,N/A
+Russell 3000,No Config,0,N/A
+S&P 500,Success (Table),503,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies
+S&P 400,Success (Table),0,https://en.wikipedia.org/wiki/S%26P_400
+Wilshire 5000 Total Market Inde,No Config,0,N/A
+SSE Composite Index (China),Success (Table),0,https://en.wikipedia.org/wiki/SSE_Composite_Index
+SZSE Component Index (China),No Config,0,N/A
+IDX COMPOSITE,No Config,0,N/A
+Nikkei 225,Success (Table),0,https://en.wikipedia.org/wiki/Nikkei_225
+Tadawul All Shares Index,No Config,0,N/A
+KOSPI Composite Index,Success (Table),0,https://en.wikipedia.org/wiki/KOSPI
+TWSE Capitalization Weighted Stock Index,Success (Table),0,https://en.wikipedia.org/wiki/Taiwan_Capitalization_Weighted_Stock_Index
+BIST 100 (Turkey),Success (Table),0,https://en.wikipedia.org/wiki/BIST_100_Index
+ALL ORDINARIES,Success (Table),0,https://en.wikipedia.org/wiki/All_Ordinaries
+S&P/ASX 300,No Config,0,N/A
+STXE 600                      I,Success (Table),0,https://en.wikipedia.org/wiki/STOXX_Europe_600
+EGX 30 Price Return Index,Success (Table),0,https://en.wikipedia.org/wiki/EGX_30
+Austrian Traded Index in EUR,Success (Table),0,https://en.wikipedia.org/wiki/Austrian_Traded_Index
+SBF 120,No Config,0,N/A
+TecDAX                        P,Success (Table),0,https://en.wikipedia.org/wiki/TecDAX
+ISEQ All Share,No Config,0,N/A
+SMI PR,Success (Table),0,https://en.wikipedia.org/wiki/Swiss_Market_Index
+FTSE 250,Success (Table),250,https://en.wikipedia.org/wiki/FTSE_250_Index
+UK FTSE All Share,No Config,0,N/A
+Amex Oil Index (Energy),No Config,0,N/A
+PHLX Semiconductor,No Config,0,N/A
+PHLX Gold/Silver Sector,Success (Table),29,https://en.wikipedia.org/wiki/Philadelphia_Gold_and_Silver_Index

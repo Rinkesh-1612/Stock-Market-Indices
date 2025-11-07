@@ -1,0 +1,97 @@
+/* --- Global Font and Body Style --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #06090F !important;
+    color: #DDDDDD; /* A slightly darker background than the theme for better contrast */
+}
+
+/* --- Style the Dropdown Menus (dcc.Dropdown) --- */
+
+/* This targets the main control box of the dropdown */
+.Select-control {
+    background-color: #22252B !important;
+    border: 1px solid #444 !important;
+}
+
+/* This targets the text for the selected value(s) */
+.Select-value-label, .Select-placeholder, .Select--single > .Select-control .Select-value {
+    color: #DDDDDD !important;
+}
+
+/* This targets the little 'x' to remove a selection */
+.Select-value-icon {
+    border-right: 1px solid #444 !important;
+}
+.Select-value-icon:hover {
+    background-color: #d62728 !important; /* A nice red for delete */
+    color: white !important;
+}
+
+/* This targets the dropdown arrow */
+.Select-arrow {
+    border-top-color: #DDDDDD !important;
+}
+
+/* This targets the dropdown menu that appears when you click */
+.Select-menu-outer {
+    background-color: #22252B !important;
+    border: 1px solid #444 !important;
+}
+
+/* This targets an individual option in the dropdown menu */
+.Select-option {
+    background-color: #22252B !important;
+    color: #DDDDDD !important;
+}
+
+/* This targets the option you are hovering over */
+.Select-option.is-focused {
+    background-color: #007BFF !important; /* A highlight color */
+    color: white !important;
+}
+
+
+/* --- Style the Date Picker (dcc.DatePickerRange) --- */
+
+.DateInput_input, .DateInput_input_1 {
+    background-color: #22252B !important;
+    color: #DDDDDD !important;
+    border: 1px solid #444 !important;
+}
+
+/* Style the calendar itself */
+.CalendarDay__default {
+    background: #22252B !important;
+    color: #DDDDDD !important;
+    border: 1px solid #111 !important;
+}
+.CalendarDay__default:hover {
+    background: #007BFF !important;
+    color: white !important;
+}
+
+/* Style the selected dates */
+.CalendarDay__selected, .CalendarDay__selected:hover {
+    background: #0056b3 !important;
+    color: white !important;
+}
+.CalendarDay__hovered_span, .CalendarDay__hovered_span:hover {
+    background: #333 !important;
+    color: #DDDDDD !important;
+}
+
+/* --- Style the Slider (dcc.Slider) --- */
+.rc-slider-track {
+    background-color: #007BFF !important;
+}
+.rc-slider-handle {
+    border-color: #007BFF !important;
+}
+
+/* --- Style the Radio Items (dcc.RadioItems) --- */
+.form-check-input:checked {
+    background-color: #007BFF !important;
+    border-color: #007BFF !important;
+}

@@ -4,36 +4,56 @@ import dash
 from dash import dcc, html, callback, Input, Output, State
 import os
 import dash_bootstrap_components as dbc
+import zipfile # <-- ADD THIS IMPORT
+import io      # <-- ADD THIS IMPORT
+
 
 dash.register_page(__name__, name="Market Treemap", title="Market Treemap")
 
-# --- Data Loading (pointing to the 'final' folder) ---
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data', 'final')
-df, index_options = pd.DataFrame(), [] # Initialize
+df, index_options = pd.DataFrame(), [] # Initialize defaults
+
 try:
+    # 1. Load metadata files
+    DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data', 'final')
     df_constituents = pd.read_csv(os.path.join(DATA_DIR, "master_constituents_list.csv"))
     df_info = pd.read_csv(os.path.join(DATA_DIR, "final_company_info_usd.csv"))
-    df_prices = pd.read_csv(os.path.join(DATA_DIR, "final_all_historical_prices.csv"), index_col='Date', parse_dates=True)
     df_summary = pd.read_csv(os.path.join(DATA_DIR, "constituent_verification_summary.csv"))
 
-    df_merged = pd.merge(df_constituents, df_info, on="Company Ticker", how="inner")
-    
-    if len(df_prices) >= 22:
+    # 2. Load and clean price data from zipped Parquet
+    df_prices = pd.DataFrame() # Initialize as empty
+    prices_path = os.path.join(DATA_DIR, "final_all_historical_prices_parquet.zip")
+    with zipfile.ZipFile(prices_path, 'r') as zf:
+        parquet_filename = [f for f in zf.namelist() if f.endswith('.parquet')][0]
+        with zf.open(parquet_filename) as pf:
+            df_prices = pd.read_parquet(pf, engine='pyarrow')
+
+    # **CRITICAL FIX:** Clean the loaded DataFrame
+    if 'Date' in df_prices.columns:
+        df_prices = df_prices.set_index('Date')
+    df_prices.index = pd.to_datetime(df_prices.index)
+    for col in df_prices.columns:
+        df_prices[col] = pd.to_numeric(df_prices[col], errors='coerce')
+
+    # 3. Process data ONLY if price data is valid and sufficient
+    if not df_prices.empty and len(df_prices) >= 22:
+        df_merged = pd.merge(df_constituents, df_info, on="Company Ticker", how="inner")
+        
         perf_1d = (df_prices.iloc[-1] / df_prices.iloc[-2]) - 1
         perf_1w = (df_prices.iloc[-1] / df_prices.iloc[-6]) - 1
         perf_1m = (df_prices.iloc[-1] / df_prices.iloc[-22]) - 1
         df_perf = pd.DataFrame({'Perf_1D': perf_1d, 'Perf_1W': perf_1w, 'Perf_1M': perf_1m}).reset_index().rename(columns={'index':'Company Ticker'})
+        
         df = pd.merge(df_merged, df_perf, on="Company Ticker", how="inner")
         df.dropna(subset=['MarketCap_USD', 'Sector', 'Perf_1D'], inplace=True)
         
         df_summary['Success Rate'] = df_summary['Success Rate'].astype(str).str.replace('%', '').astype(float)
         high_quality_indices = df_summary[df_summary['Success Rate'] >= 50.0]['Index Name'].unique()
         df = df[df['Index Name'].isin(high_quality_indices)]
+        
         index_options = sorted(df['Index Name'].unique())
 
-except FileNotFoundError as e:
-    print(f"Treemap page error: {e}")
-
+except Exception as e:
+    print(f"CRITICAL ERROR in treemap page: {e}")
 # --- New Layout with Interpretation Section ---
 layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1("Market Performance Treemap", className="text-center text-white my-4"))),

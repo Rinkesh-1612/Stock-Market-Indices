@@ -11,31 +11,45 @@ dash.register_page(__name__, name="Index Distribution", title="Sunburst Distribu
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data', 'final')
 df, all_continents = pd.DataFrame(), []
 try:
-    df = pd.read_csv(os.path.join(DATA_DIR, "master_indices_list.csv"))
+    df = pd.read_csv(os.path.join(DATA_DIR, "data_cleaned", "master_indices_list.csv"))
     df.dropna(subset=['Continent', 'Country'], inplace=True)
     df['count'] = 1
     all_continents = sorted(df['Continent'].unique())
 except FileNotFoundError as e:
     print(f"Sunburst page error: {e}")
 
-# --- Page Layout ---
 layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1("Hierarchical Distribution of Global Stock Indices", className="text-center text-white mb-4"))),
-    dbc.Card(dbc.CardBody(
-        dcc.Dropdown(
-            id='continent-filter-sunburst',
-            options=[{'label': i, 'value': i} for i in all_continents],
-            value=all_continents, multi=True, placeholder="Select continents..."
+    
+    # Main row for controls and chart
+    dbc.Row([
+        # --- Column for Controls (Left Side) ---
+        dbc.Col([
+            dbc.Card(dbc.CardBody(
+                dcc.Dropdown(
+                    id='continent-filter-sunburst',
+                    options=[{'label': i, 'value': i} for i in all_continents],
+                    value=all_continents, 
+                    multi=True, 
+                    placeholder="Select continents..."
+                )
+            ), className="p-3 mb-4"),
+            
+            html.Div([
+                dbc.Button("Show Analysis & Interpretation", id="collapse-sunburst-button", className="mb-3 w-100"),
+                dbc.Collapse(
+                    dbc.Card(dbc.CardBody(id="sunburst-interpretation-text")),
+                    id="collapse-sunburst", is_open=False,
+                ),
+            ])
+        ], width=12, md=4, lg=3), # Takes full width on small screens, 1/3 on large
+
+        # --- Column for the Chart (Right Side) ---
+        dbc.Col(
+            dbc.Spinner(dcc.Graph(id='sunburst-chart', style={'height': '80vh'})),
+            width=12, md=8, lg=9 # Takes full width on small screens, 2/3 on large
         )
-    ), className="p-3 mb-4"),
-    dbc.Row(dbc.Col(html.Div([
-        dbc.Button("Show Analysis & Interpretation", id="collapse-sunburst-button", className="mb-3"),
-        dbc.Collapse(
-            dbc.Card(dbc.CardBody(id="sunburst-interpretation-text")),
-            id="collapse-sunburst", is_open=False,
-        ),
-    ]))),
-    dbc.Row(dbc.Col(dbc.Spinner(dcc.Graph(id='sunburst-chart', style={'height': '75vh'}))))
+    ])
 ], fluid=True)
 
 # --- Callbacks ---

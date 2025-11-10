@@ -6,43 +6,54 @@ import os
 import dash_bootstrap_components as dbc
 from scipy.cluster.hierarchy import linkage, leaves_list
 from scipy.spatial.distance import pdist
+import zipfile # <-- ADD THIS IMPORT
+import io      
+
 
 dash.register_page(__name__, name="Correlation Matrix", title="Index Correlation")
-
-# Initialize an empty DataFrame
-correlation_matrix = pd.DataFrame()
+correlation_matrix = pd.DataFrame() # Initialize an empty DataFrame
 
 try:
-    # --- 1. Load Data ---
+    # 1. Load index metadata
     DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data', 'final')
-    df_indices = pd.read_csv(os.path.join(DATA_DIR, "master_indices_list.csv"))
-    df_prices = pd.read_csv(os.path.join(DATA_DIR, "final_all_historical_prices.csv"), index_col='Date', parse_dates=True)
+    df_indices = pd.read_csv(os.path.join(DATA_DIR, "data_cleaned", "master_indices_list.csv"))
 
-    # --- 2. Find Common Tickers & Handle NaNs---
-    tickers_in_master_list = set(df_indices['Ticker'])
-    tickers_in_price_data = set(df_prices.columns)
-    common_tickers = list(tickers_in_master_list.intersection(tickers_in_price_data))
-    df_prices_filtered = df_prices[common_tickers]
-    df_indices_filtered = df_indices[df_indices['Ticker'].isin(common_tickers)]
-    df_prices_filled = df_prices_filtered.ffill().bfill()
-    
-    # Limit to a reasonable number for readability
-    if len(df_prices_filled.columns) > 40:
-        top_indices = df_prices_filled.count().nlargest(40).index
-        df_prices_filled = df_prices_filled[top_indices]
+    # 2. Load and clean price data from zipped Parquet
+    df_prices = pd.DataFrame() # Initialize as empty
+    prices_path = os.path.join(DATA_DIR, "final_all_historical_prices_parquet.zip")
+    with zipfile.ZipFile(prices_path, 'r') as zf:
+        parquet_filename = [f for f in zf.namelist() if f.endswith('.parquet')][0]
+        with zf.open(parquet_filename) as pf:
+            df_prices = pd.read_parquet(pf, engine='pyarrow')
 
-    # --- 3. Calculate Returns and Remove Non-Volatile Indices (THE FIX) ---
-    if not df_prices_filled.empty:
+    # **CRITICAL FIX:** Clean the loaded DataFrame
+    if 'Date' in df_prices.columns:
+        df_prices = df_prices.set_index('Date')
+    df_prices.index = pd.to_datetime(df_prices.index)
+    for col in df_prices.columns:
+        df_prices[col] = pd.to_numeric(df_prices[col], errors='coerce')
+
+    # 3. Process data ONLY if price data is valid
+    if not df_prices.empty:
+        tickers_in_master_list = set(df_indices['Ticker'])
+        tickers_in_price_data = set(df_prices.columns)
+        common_tickers = list(tickers_in_master_list.intersection(tickers_in_price_data))
+        
+        df_prices_filtered = df_prices[common_tickers]
+        df_indices_filtered = df_indices[df_indices['Ticker'].isin(common_tickers)]
+        df_prices_filled = df_prices_filtered.ffill().bfill()
+        
+        if len(df_prices_filled.columns) > 40:
+            top_indices = df_prices_filled.count().nlargest(40).index
+            df_prices_filled = df_prices_filled[top_indices]
+
         df_returns = df_prices_filled.pct_change().dropna()
-        # Remove indices with near-zero standard deviation to prevent correlation errors
         non_volatile_indices = df_returns.columns[df_returns.std() < 1e-8] 
         if len(non_volatile_indices) > 0:
             df_returns = df_returns.drop(columns=non_volatile_indices)
         
-        # --- 4. Calculate Correlation ---
         correlation_matrix = df_returns.corr()
         
-        # --- 5. ADVANCED: Reorder matrix using clustering ---
         if not correlation_matrix.empty and len(correlation_matrix) > 1:
             dist_matrix = pdist(correlation_matrix.values)
             linkage_matrix = linkage(dist_matrix, method='ward')
@@ -50,13 +61,11 @@ try:
             ordered_columns = correlation_matrix.columns[ordered_indices]
             correlation_matrix = correlation_matrix.reindex(index=ordered_columns, columns=ordered_columns)
 
-        # Rename columns for display
         ticker_to_name = pd.Series(df_indices_filtered['Index Name'].values, index=df_indices_filtered['Ticker']).to_dict()
         correlation_matrix.rename(columns=ticker_to_name, index=ticker_to_name, inplace=True)
 
 except Exception as e:
     print(f"CRITICAL ERROR loading data for heatmap: {e}")
-
 # --- Page Layout ---
 layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1("Index Correlation Heatmap", className="text-center text-white my-4"))),

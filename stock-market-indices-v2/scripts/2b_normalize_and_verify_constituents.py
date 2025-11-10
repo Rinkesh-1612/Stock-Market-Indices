@@ -32,9 +32,6 @@ def is_valid_ticker(ticker):
     TICKER_VALIDATION_CACHE[ticker] = None
     return False
 
-# ==============================================================================
-# === THE UPGRADED, SMARTER PARSING FUNCTION IS HERE ===========================
-# ==============================================================================
 def find_valid_yfinance_ticker(row):
     """
     Takes a row and intelligently parses multiple possible columns to find a valid yfinance ticker.
@@ -74,10 +71,6 @@ def find_valid_yfinance_ticker(row):
         TICKER_VALIDATION_CACHE[company_name] = None
 
     return None
-# ==============================================================================
-# === END OF UPGRADED FUNCTION =================================================
-# ==============================================================================
-
 
 def main():
     try:

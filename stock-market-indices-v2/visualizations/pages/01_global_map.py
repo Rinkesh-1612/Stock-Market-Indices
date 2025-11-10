@@ -12,7 +12,7 @@ dash.register_page(__name__, path='/', name="Global Map", title="Global Indices 
 # --- Data Loading (already updated to /final) ---
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(SCRIPT_DIR, '..', '..', 'data', 'final')
-MASTER_INDICES_FILE = os.path.join(DATA_DIR, "master_indices_list.csv")
+MASTER_INDICES_FILE = os.path.join(DATA_DIR, "data_cleaned", "master_indices_list.csv")
 
 try:
     df = pd.read_csv(MASTER_INDICES_FILE)
@@ -46,9 +46,6 @@ fig.update_layout(
 )
 
 
-# ==============================================================================
-# === INTERPRETATION ADDED HERE ================================================
-# ==============================================================================
 # --- Define the Page Layout ---
 layout = dbc.Container([
     # Page Title
@@ -95,6 +92,3 @@ def toggle_collapse_map(n, is_open):
     if n:
         return not is_open
     return is_open
-# ==============================================================================
-# === END OF INTERPRETATION SECTION ============================================
-# ==============================================================================

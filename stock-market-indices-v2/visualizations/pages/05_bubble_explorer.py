@@ -50,22 +50,64 @@ layout = dbc.Container([
     Input('index-dropdown-bubble', 'value')
 )
 def update_bubble_chart(selected_index):
-    if not selected_index or df.empty: return {}
+    if not selected_index or df.empty: 
+        return {}
+        
     filtered_df = df[df['Index Name'] == selected_index].copy()
     
+    # ==============================================================================
+    # === THE FIX IS HERE: Create a custom formatting function =====================
+    # ==============================================================================
+    def format_market_cap_usd(mc_usd):
+        """Custom function to format market cap into a readable string with B for Billions."""
+        if pd.isna(mc_usd):
+            return "N/A"
+        if mc_usd >= 1e12:
+            return f"${mc_usd / 1e12:.2f}T"  # Trillions
+        if mc_usd >= 1e9:
+            return f"${mc_usd / 1e9:.2f}B"  # Billions
+        if mc_usd >= 1e6:
+            return f"${mc_usd / 1e6:.2f}M"  # Millions
+        return f"${mc_usd / 1e3:.2f}K"      # Thousands
+
+    # Apply this function to create a new column for the hover text
+    filtered_df['MarketCapFormatted'] = filtered_df['MarketCap_USD'].apply(format_market_cap_usd)
+    # ==============================================================================
+    # === END OF FIX ===============================================================
+    # ==============================================================================
+
     fig = px.scatter(
-        filtered_df, x="Company Name", y="MarketCap_USD", size="MarketCap_USD", color="Sector",
-        hover_name="Company Name", custom_data=['Company Ticker', 'MarketCap_USD', 'Sector', 'Industry'],
-        log_y=True, size_max=80, template="plotly_dark"
+        filtered_df, 
+        x="Company Name", 
+        y="MarketCap_USD", 
+        size="MarketCap_USD", 
+        color="Sector",
+        hover_name="Company Name", 
+        # Pass the new formatted column to custom_data
+        custom_data=['Company Ticker', 'MarketCapFormatted', 'Sector', 'Industry'],
+        log_y=True, 
+        size_max=80, 
+        template="plotly_dark"
     )
+    
     fig.update_layout(
         title=f"Market Cap Distribution for {selected_index} (USD)",
         xaxis={'title': '', 'showticklabels': False, 'showgrid': False},
-        yaxis={'title': 'Market Cap (USD, Log Scale)'}, legend_title_text='Sector',
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)"
+        yaxis={'title': 'Market Cap (USD, Log Scale)'}, 
+        legend_title_text='Sector',
+        paper_bgcolor="rgba(0,0,0,0)", 
+        plot_bgcolor="rgba(0,0,0,0)"
     )
+    
+    # Update the hovertemplate to use the new pre-formatted string
     fig.update_traces(
-        hovertemplate='<b>%{hovertext}</b> (%{customdata[0]})<br>Market Cap (USD): %{customdata[1]:$,.2s}<br>Sector: %{customdata[2]}<br>Industry: %{customdata[3]}<extra></extra>'
+        hovertemplate=(
+            '<b>%{hovertext}</b> (%{customdata[0]})<br>'
+            'Market Cap (USD): %{customdata[1]}<br>' # This now uses our 'MarketCapFormatted' column
+            'Sector: %{customdata[2]}<br>'
+            'Industry: %{customdata[3]}'
+            '<extra></extra>'
+        )
     )
     return fig
 

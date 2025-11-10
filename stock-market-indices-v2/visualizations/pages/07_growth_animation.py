@@ -3,36 +3,62 @@ import dash
 from dash import dcc, html, ctx, callback, Input, Output, State, clientside_callback
 import os
 import dash_bootstrap_components as dbc
+import zipfile # <-- ADD THIS IMPORT
+import io      # <-- ADD THIS IMPORT
+
 
 dash.register_page(__name__, name="Animated Growth", title="Animated Growth Chart")
 
+# --- PASTE THIS NEW BLOCK IN ITS PLACE ---
+
 # --- Data Loading and Preparation ---
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data', 'final')
-df_final, unique_dates, unique_continents, date_marks, data_for_store = pd.DataFrame(), [], [], {}, []
+df_final, unique_dates, unique_continents, date_marks, data_for_store = pd.DataFrame(), [], [], {}, [] # Initialize defaults
 
 try:
-    df_indices = pd.read_csv(os.path.join(DATA_DIR, "master_indices_list.csv"))
-    df_indices = df_indices[df_indices['Ticker'] != '^MERV'].copy()
-    df_prices = pd.read_csv(os.path.join(DATA_DIR, "final_all_historical_prices.csv"), index_col='Date', parse_dates=True)
-    
-    index_tickers = df_indices['Ticker'].tolist()
-    df_prices = df_prices[df_prices.columns.intersection(index_tickers)]
+    # 1. Load index metadata
+    df_indices = pd.read_csv(os.path.join(DATA_DIR, "data_cleaned", "master_indices_list.csv"))
 
-    df_monthly = df_prices.resample('M').last()
-    df_growth = (df_monthly / df_monthly.iloc[0] - 1) * 100
-    df_melted = df_growth.reset_index().melt(id_vars='Date', var_name='Ticker', value_name='Cumulative Growth (%)')
-    df_final = pd.merge(df_melted, df_indices, on='Ticker')
-    df_final['Date'] = df_final['Date'].dt.strftime('%Y-%m-%d')
-    df_final.dropna(subset=['Cumulative Growth (%)'], inplace=True)
-    
-    unique_dates = sorted(df_final['Date'].unique())
-    unique_continents = sorted(df_final['Continent'].unique())
-    date_marks = {i: date[:4] for i, date in enumerate(unique_dates) if i % 12 == 0 or i == len(unique_dates) - 1}
-    data_for_store = df_final.to_dict('records')
+    # 2. Load and clean price data from zipped Parquet
+    df_prices = pd.DataFrame() # Initialize as empty
+    prices_path = os.path.join(DATA_DIR, "final_all_historical_prices_parquet.zip")
+    with zipfile.ZipFile(prices_path, 'r') as zf:
+        parquet_filename = [f for f in zf.namelist() if f.endswith('.parquet')][0]
+        with zf.open(parquet_filename) as pf:
+            df_prices = pd.read_parquet(pf, engine='pyarrow')
 
-except FileNotFoundError as e:
-    print(f"Growth Animation page error: {e}")
+    # **CRITICAL FIX:** Clean the loaded DataFrame
+    if 'Date' in df_prices.columns:
+        df_prices = df_prices.set_index('Date')
+    df_prices.index = pd.to_datetime(df_prices.index)
+    for col in df_prices.columns:
+        df_prices[col] = pd.to_numeric(df_prices[col], errors='coerce')
 
+    # 3. Process data ONLY if price data is valid
+    if not df_prices.empty:
+        df_indices = df_indices[df_indices['Ticker'] != '^MERV'].copy()
+        index_tickers = df_indices['Ticker'].tolist()
+        df_prices = df_prices[df_prices.columns.intersection(index_tickers)]
+
+        # Use 'ME' for month-end frequency
+        df_monthly = df_prices.resample('ME').last()
+        df_growth = (df_monthly / df_monthly.iloc[0] - 1) * 100
+        df_melted = df_growth.reset_index().melt(id_vars='Date', var_name='Ticker', value_name='Cumulative Growth (%)')
+        
+        df_final = pd.merge(df_melted, df_indices, on='Ticker')
+        df_final['Date'] = df_final['Date'].dt.strftime('%Y-%m-%d')
+        df_final.dropna(subset=['Cumulative Growth (%)'], inplace=True)
+        
+        unique_dates = sorted(df_final['Date'].unique())
+        unique_continents = sorted(df_final['Continent'].unique())
+        date_marks = {i: date[:4] for i, date in enumerate(unique_dates) if i % 12 == 0 or i == len(unique_dates) - 1}
+        data_for_store = df_final.to_dict('records')
+
+except Exception as e:
+    print(f"Error loading data in Animated Growth page: {e}")
+
+
+# --- END OF NEW BLOCK ---
 # --- Page Layout ---
 layout = dbc.Container([
     html.H1("Stock Index Cumulative Growth Over Time", className="text-center my-4"),

@@ -18,12 +18,6 @@ OUTPUT_DIR_INDIVIDUAL = os.path.join(DATA_DIR, "constituent_lists")
 OUTPUT_FILE_MASTER = os.path.join(DATA_DIR, "master_constituents_list.csv")
 SUMMARY_REPORT_FILE = os.path.join(DATA_DIR, "constituent_scraping_summary.csv")
 
-# =====================================================================================
-# === THE GROUND-TRUTH CONFIGURATION HUB (Based on your research) ====================
-# =====================================================================================
-# =====================================================================================
-# === THE GROUND-TRUTH CONFIGURATION HUB (v2 - EXPANDED) ==============================
-# =====================================================================================
 INDEX_CONFIG = {
     # --- Americas ---
     '^DJI': {'url': 'https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average', 'type': 'table', 'company_col': 'Company', 'ticker_col': 'Symbol'},

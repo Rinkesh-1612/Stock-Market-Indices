@@ -1,1 +1,1 @@
-web: gunicorn --chdir visualizations app:server
+web: cd visualizations && gunicorn app:server

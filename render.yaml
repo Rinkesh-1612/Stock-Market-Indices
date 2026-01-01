@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: stock-market-indices
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir stock-market-indices-v2/visualizations app:server
+    plan: free

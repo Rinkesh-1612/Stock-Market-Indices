@@ -3,5 +3,7 @@ requests
 pandas
 numpy
 matplotlib
-
-
+dash
+dash-bootstrap-components
+gunicorn
+plotly

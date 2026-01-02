@@ -1,1 +1,1 @@
-web: gunicorn --chdir visualizations --bind 0.0.0.0:10000 app:server
+web: pwd && ls -R && gunicorn --chdir visualizations --bind 0.0.0.0:10000 app:server

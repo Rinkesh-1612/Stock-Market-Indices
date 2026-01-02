@@ -4,5 +4,5 @@ services:
     rootDirectory: stock-market-indices-v2
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: cd visualizations && gunicorn app:server
+    startCommand: gunicorn --chdir visualizations --bind 0.0.0.0:10000 app:server
     plan: free

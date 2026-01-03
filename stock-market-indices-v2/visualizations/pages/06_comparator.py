@@ -98,6 +98,43 @@ layout = dbc.Container([
     Output('comparator-notification-area', 'children'),
     [Input('index-dropdown-comparator', 'value'), 
      Input('date-picker-range-comparator', 'start_date'), 
+     Input('date-picker-range-comparator', 'end_date')]
+)
+def update_graph(selected_tickers, start_date, end_date):
+    if not selected_tickers or df_prices.empty:
+        return go.Figure().update_layout(title="Please select one or more indices.", template='plotly_dark'), None
+
+    fig = go.Figure()
+    
+    plotted_tickers = []
+    skipped_tickers = []
+
+    # Optimization: Filter columns first to avoid copying the entire dataframe
+    valid_tickers = [t for t in selected_tickers if t in df_prices.columns]
+    
+    # Create a subset with only selected tickers and date range
+    if valid_tickers:
+        subset_df = df_prices.loc[start_date:end_date, valid_tickers]
+    else:
+        subset_df = pd.DataFrame()
+
+    for ticker in selected_tickers:
+        if ticker in subset_df.columns:
+            series = subset_df[ticker].dropna()
+            if not series.empty:
+                normalized = (series / series.iloc[0] - 1) * 100
+                fig.add_trace(go.Scatter(x=normalized.index, y=normalized, mode='lines', name=TICKER_TO_NAME_MAP.get(ticker, ticker)))
+                plotted_tickers.append(ticker)
+            else:
+                skipped_tickers.append(ticker)
+        else:
+            skipped_tickers.append(ticker)
+    
+    # --- Create the notification message ---
+    notification = None
+    if skipped_tickers:
+        skipped_names = [TICKER_TO_NAME_MAP.get(t, t) for t in skipped_tickers]
+        notification = dbc.Alert(
             [
                 html.H5("Note", className="alert-heading"),
                 "The following indices could not be plotted as they have no data in the selected date range:",

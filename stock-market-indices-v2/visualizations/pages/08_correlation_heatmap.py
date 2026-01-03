@@ -1,43 +1,5 @@
 import pandas as pd
 import plotly.graph_objects as go
-import dash
-from dash import dcc, html, callback, Input, Output, State
-import os
-import dash_bootstrap_components as dbc
-from scipy.cluster.hierarchy import linkage, leaves_list
-from scipy.spatial.distance import pdist
-import zipfile # <-- ADD THIS IMPORT
-import io      
-
-
-dash.register_page(__name__, name="Correlation Matrix", title="Index Correlation")
-correlation_matrix = pd.DataFrame() # Initialize an empty DataFrame
-
-try:
-    # 1. Load index metadata
-    DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data', 'final')
-    df_indices = pd.read_csv(os.path.join(DATA_DIR, "data_cleaned", "master_indices_list.csv"))
-
-    # 2. Load and clean price data from zipped Parquet
-    df_prices = pd.DataFrame() # Initialize as empty
-    prices_path = os.path.join(DATA_DIR, "final_all_historical_prices_parquet.zip")
-    with zipfile.ZipFile(prices_path, 'r') as zf:
-        parquet_filename = [f for f in zf.namelist() if f.endswith('.parquet')][0]
-        with zf.open(parquet_filename) as pf:
-            df_prices = pd.read_parquet(pf, engine='pyarrow')
-
-    # **CRITICAL FIX:** Clean the loaded DataFrame
-    if 'Date' in df_prices.columns:
-        df_prices = df_prices.set_index('Date')
-    df_prices.index = pd.to_datetime(df_prices.index)
-    for col in df_prices.columns:
-        df_prices[col] = pd.to_numeric(df_prices[col], errors='coerce')
-
-    # 3. Process data ONLY if price data is valid
-    if not df_prices.empty:
-        tickers_in_master_list = set(df_indices['Ticker'])
-        tickers_in_price_data = set(df_prices.columns)
-        common_tickers = list(tickers_in_master_list.intersection(tickers_in_price_data))
         
         df_prices_filtered = df_prices[common_tickers]
         df_indices_filtered = df_indices[df_indices['Ticker'].isin(common_tickers)]

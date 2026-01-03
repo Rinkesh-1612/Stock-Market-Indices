@@ -3,6 +3,8 @@ import os
 import zipfile
 import gc
 import logging
+import tempfile
+import pyarrow.parquet as pq
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,35 +43,92 @@ class DataLoader:
         if self._df_prices is not None:
             return self._df_prices
 
+        temp_dir = tempfile.mkdtemp()
+        temp_parquet_path = os.path.join(temp_dir, 'temp_prices.parquet')
+
         try:
-            logger.info("Loading price data...")
+            logger.info("Starting optimized batched data loading...")
             data_dir = self.get_data_dir()
-            prices_path = os.path.join(data_dir, "final_all_historical_prices_parquet.zip")
+            zip_path = os.path.join(data_dir, "final_all_historical_prices_parquet.zip")
             
-            with zipfile.ZipFile(prices_path, 'r') as zf:
+            # 1. Extract to temp file (required for column inspection and partial reads)
+            logger.info("Extracting parquet file...")
+            with zipfile.ZipFile(zip_path, 'r') as zf:
                 parquet_filename = [f for f in zf.namelist() if f.endswith('.parquet')][0]
-                with zf.open(parquet_filename) as pf:
-                    # Load directly
-                    df = pd.read_parquet(pf, engine='pyarrow')
-            
-            # Optimization: Convert to float32 to save memory
-            for col in df.select_dtypes(include=['float64']).columns:
-                df[col] = df[col].astype('float32')
+                with zf.open(parquet_filename) as source, open(temp_parquet_path, "wb") as target:
+                    target.write(source.read())
 
-            # Ensure index is datetime
-            if 'Date' in df.columns:
-                df = df.set_index('Date')
-            df.index = pd.to_datetime(df.index)
-
-            self._df_prices = df
-            logger.info(f"Loaded price data. Shape: {df.shape}, Memory: {df.memory_usage().sum() / 1024**2:.2f} MB")
+            # 2. Inspect columns
+            pf = pq.ParquetFile(temp_parquet_path)
+            all_columns = pf.schema.names
             
-            # Force garbage collection
-            gc.collect()
+            # 3. Identify Index vs Stock columns
+            df_indices = self.load_indices()
+            index_tickers = set(df_indices['Ticker'].values)
+            
+            # 'Date' is essential for alignment
+            cols_to_load_full = [c for c in all_columns if c in index_tickers or c == 'Date']
+            cols_to_load_partial = [c for c in all_columns if c not in index_tickers and c != 'Date']
+
+            # 4. Load Full History for Indices (Required for Comparator, Growth, Correlation)
+            logger.info(f"Loading full history for {len(cols_to_load_full)} index columns...")
+            df_full = pd.read_parquet(temp_parquet_path, columns=cols_to_load_full)
+            if 'Date' in df_full.columns:
+                df_full = df_full.set_index('Date')
+            df_full.index = pd.to_datetime(df_full.index)
+            
+            # Optimize Indices
+            for col in df_full.select_dtypes(include=['float64']).columns:
+                df_full[col] = df_full[col].astype('float32')
+
+            # 5. Load Partial History for Stocks (Batched, Required for Treemap)
+            # We only need the last few rows for the Treemap (current price, 1d, 1w, 1m changes)
+            # 30 rows is plenty safe.
+            BATCH_SIZE = 500
+            partial_dfs = []
+            
+            logger.info(f"Loading partial history (last 30 days) for {len(cols_to_load_partial)} stock columns...")
+            for i in range(0, len(cols_to_load_partial), BATCH_SIZE):
+                batch_cols = cols_to_load_partial[i : i + BATCH_SIZE]
+                # Read Date + Batch
+                df_batch = pd.read_parquet(temp_parquet_path, columns=['Date'] + batch_cols)
+                
+                # Keep only last 30 days
+                df_batch = df_batch.tail(30)
+                
+                if 'Date' in df_batch.columns:
+                    df_batch = df_batch.set_index('Date')
+                df_batch.index = pd.to_datetime(df_batch.index)
+                
+                # Optimize
+                for col in df_batch.select_dtypes(include=['float64']).columns:
+                    df_batch[col] = df_batch[col].astype('float32')
+                
+                partial_dfs.append(df_batch)
+                gc.collect()
+
+            # 6. Combine
+            logger.info("Merging dataframes...")
+            # concat will align on index. Indices will have full range, Stocks will have NaNs for older dates.
+            self._df_prices = pd.concat([df_full] + partial_dfs, axis=1)
+            
+            logger.info(f"Loaded. Shape: {self._df_prices.shape}, Memory: {self._df_prices.memory_usage().sum() / 1024**2:.2f} MB")
 
         except Exception as e:
             logger.error(f"Error loading price data: {e}")
             self._df_prices = pd.DataFrame()
+        
+        finally:
+            # Cleanup temp file
+            try:
+                if os.path.exists(temp_parquet_path):
+                    os.remove(temp_parquet_path)
+                if os.path.exists(temp_dir):
+                    os.rmdir(temp_dir)
+            except Exception as e:
+                logger.warning(f"Failed to cleanup temp files: {e}")
+            
+            gc.collect()
 
         return self._df_prices
 

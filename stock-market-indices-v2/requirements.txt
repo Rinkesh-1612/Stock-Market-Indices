@@ -8,3 +8,4 @@ dash-bootstrap-components
 gunicorn
 plotly
 scipy
+pyarrow

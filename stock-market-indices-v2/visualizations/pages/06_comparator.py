@@ -1,3 +1,51 @@
+import pandas as pd
+import plotly.graph_objects as go
+import dash
+from dash import dcc, html, callback, Input, Output, State
+import dash_bootstrap_components as dbc
+import os
+from datetime import datetime, timedelta
+import sys
+
+# --- Register Page ---
+dash.register_page(__name__, name="Index Comparator", title="Index Performance Comparator")
+
+# --- Data Loading ---
+def load_comparator_data():
+    ticker_map, options, initial_start_date, initial_end_date = {}, [], None, None
+    df_prices = pd.DataFrame()
+    
+    try:
+        # Import shared data loader
+        try:
+            from data_loader import global_data_loader
+        except ImportError:
+            sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+            from data_loader import global_data_loader
+
+        df_prices = global_data_loader.load_prices()
+        df_indices = global_data_loader.load_indices()
+        df_indices = df_indices[df_indices['Ticker'] != '^MERV'].copy()
+        
+        if not df_prices.empty:
+            desired_tickers = set(df_indices['Ticker'])
+            available_tickers = set(df_prices.columns)
+            plottable_tickers = sorted(list(desired_tickers.intersection(available_tickers)))
+            
+            # Use full range for initial setup
+            initial_start_date = df_prices.index.max() - timedelta(days=365*3)
+            initial_end_date = df_prices.index.max()
+            
+            df_indices_plottable = df_indices[df_indices['Ticker'].isin(plottable_tickers)]
+            ticker_map = pd.Series(df_indices_plottable['Index Name'].values, index=df_indices_plottable['Ticker']).to_dict()
+            options = [{'label': row['Index Name'], 'value': row['Ticker']} for _, row in df_indices_plottable.iterrows()]
+            
+    except Exception as e:
+        print(f"Error during data orchestration in Comparator page: {e}")
+    return df_prices, ticker_map, options, initial_start_date, initial_end_date
+
+df_prices, TICKER_TO_NAME_MAP, ALL_INDICES_OPTIONS, initial_start_date, initial_end_date = load_comparator_data()
+
 # --- Define the Page Layout ---
 layout = dbc.Container([
     html.H1("Global Index Performance Comparator", className="text-center my-4"),
@@ -21,7 +69,7 @@ layout = dbc.Container([
                 ),
             ]), className="p-4"),
             
-            # --- New Interpretation and Notification Area ---
+            # --- Interpretation and Notification Area ---
             html.Div([
                 dbc.Button("Show Analysis & Interpretation", id="collapse-comparator-button", className="mb-3 w-100"),
                 dbc.Collapse(
@@ -30,7 +78,7 @@ layout = dbc.Container([
                 ),
             ], className="mt-4"),
             
-            # --- This is the new notification area ---
+            # --- Notification area ---
             html.Div(id="comparator-notification-area", className="mt-4")
 
         ], width=12, lg=4),
@@ -42,15 +90,12 @@ layout = dbc.Container([
         )
     ])
 ], fluid=True)
-# ==============================================================================
-# === END OF FIX ===============================================================
-# ==============================================================================
 
 
-# --- Callback for the Graph (Now returns two outputs) ---
+# --- Callback for the Graph ---
 @callback(
     Output('performance-graph-comparator', 'figure'),
-    Output('comparator-notification-area', 'children'), # New output for notifications
+    Output('comparator-notification-area', 'children'),
     [Input('index-dropdown-comparator', 'value'), 
      Input('date-picker-range-comparator', 'start_date'), 
      Input('date-picker-range-comparator', 'end_date')]
@@ -68,7 +113,6 @@ def update_graph(selected_tickers, start_date, end_date):
     for ticker in selected_tickers:
         if ticker in filtered_df.columns:
             series = filtered_df[ticker].dropna()
-            # This check is the reason tickers don't plot
             if not series.empty:
                 normalized = (series / series.iloc[0] - 1) * 100
                 fig.add_trace(go.Scatter(x=normalized.index, y=normalized, mode='lines', name=TICKER_TO_NAME_MAP.get(ticker, ticker)))
@@ -101,7 +145,7 @@ def update_graph(selected_tickers, start_date, end_date):
     return fig, notification
 
 
-# --- Callbacks for Interpretation Section (unchanged) ---
+# --- Callbacks for Interpretation Section ---
 @callback(
     Output("collapse-comparator", "is_open"),
     Input("collapse-comparator-button", "n_clicks"),

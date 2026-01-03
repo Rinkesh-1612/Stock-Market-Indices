@@ -1,3 +1,39 @@
+import pandas as pd
+import plotly.express as px
+import dash
+from dash import dcc, html, callback, Input, Output, State
+import os
+import dash_bootstrap_components as dbc
+import sys
+
+# --- Register Page ---
+dash.register_page(__name__, name="Market Treemap", title="Market Treemap")
+
+# --- Data Loading ---
+df, index_options = pd.DataFrame(), []
+
+try:
+    # Import shared data loader
+    try:
+        from data_loader import global_data_loader
+    except ImportError:
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+        from data_loader import global_data_loader
+
+    # 1. Load metadata files
+    DATA_DIR = global_data_loader.get_data_dir()
+    df_constituents = pd.read_csv(os.path.join(DATA_DIR, "master_constituents_list.csv"))
+    df_info = pd.read_csv(os.path.join(DATA_DIR, "final_company_info_usd.csv"))
+    df_summary = pd.read_csv(os.path.join(DATA_DIR, "constituent_verification_summary.csv"))
+
+    # 2. Load price data from shared loader
+    df_prices = global_data_loader.load_prices()
+
+    # 3. Process data
+    if not df_prices.empty and len(df_prices) >= 22:
+        df_merged = pd.merge(df_constituents, df_info, on="Company Ticker", how="inner")
+        
+        perf_1d = (df_prices.iloc[-1] / df_prices.iloc[-2]) - 1
         perf_1w = (df_prices.iloc[-1] / df_prices.iloc[-6]) - 1
         perf_1m = (df_prices.iloc[-1] / df_prices.iloc[-22]) - 1
         df_perf = pd.DataFrame({'Perf_1D': perf_1d, 'Perf_1W': perf_1w, 'Perf_1M': perf_1m}).reset_index().rename(columns={'index':'Company Ticker'})
@@ -13,7 +49,8 @@
 
 except Exception as e:
     print(f"CRITICAL ERROR in treemap page: {e}")
-# --- New Layout with Interpretation Section ---
+
+# --- Layout with Interpretation Section ---
 layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1("Market Performance Treemap", className="text-center text-white my-4"))),
     dbc.Card(
@@ -55,7 +92,7 @@ layout = dbc.Container([
 ], fluid=True)
 
 
-# --- Callback for the Treemap Figure (same as before) ---
+# --- Callback for the Treemap Figure ---
 @callback(
     Output('market-treemap', 'figure'),
     [Input('index-dropdown-treemap', 'value'), Input('period-selector-treemap', 'value')]
@@ -81,7 +118,7 @@ def update_treemap(selected_index, selected_period):
     )
     return fig
 
-# --- New Callback for the Collapsible Section ---
+# --- Callback for the Collapsible Section ---
 @callback(
     Output("collapse-treemap", "is_open"),
     Input("collapse-treemap-button", "n_clicks"),
@@ -92,7 +129,7 @@ def toggle_collapse(n, is_open):
         return not is_open
     return is_open
 
-# --- New Callback for DYNAMIC Interpretation Text ---
+# --- Callback for DYNAMIC Interpretation Text ---
 @callback(
     Output("treemap-interpretation-text", "children"),
     [Input('index-dropdown-treemap', 'value'), Input('period-selector-treemap', 'value')]

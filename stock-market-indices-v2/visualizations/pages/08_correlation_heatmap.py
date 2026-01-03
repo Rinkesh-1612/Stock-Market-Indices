@@ -1,5 +1,38 @@
 import pandas as pd
 import plotly.graph_objects as go
+import dash
+from dash import dcc, html, callback, Input, Output, State
+import os
+import dash_bootstrap_components as dbc
+from scipy.cluster.hierarchy import linkage, leaves_list
+from scipy.spatial.distance import pdist
+import sys
+
+# --- Register Page ---
+dash.register_page(__name__, name="Correlation Matrix", title="Index Correlation")
+
+# --- Data Loading ---
+correlation_matrix = pd.DataFrame()
+
+try:
+    # Import shared data loader
+    try:
+        from data_loader import global_data_loader
+    except ImportError:
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+        from data_loader import global_data_loader
+
+    # 1. Load index metadata
+    df_indices = global_data_loader.load_indices()
+
+    # 2. Load price data
+    df_prices = global_data_loader.load_prices()
+
+    # 3. Process data
+    if not df_prices.empty:
+        tickers_in_master_list = set(df_indices['Ticker'])
+        tickers_in_price_data = set(df_prices.columns)
+        common_tickers = list(tickers_in_master_list.intersection(tickers_in_price_data))
         
         df_prices_filtered = df_prices[common_tickers]
         df_indices_filtered = df_indices[df_indices['Ticker'].isin(common_tickers)]
@@ -28,6 +61,7 @@ import plotly.graph_objects as go
 
 except Exception as e:
     print(f"CRITICAL ERROR loading data for heatmap: {e}")
+
 # --- Page Layout ---
 layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1("Index Correlation Heatmap", className="text-center text-white my-4"))),

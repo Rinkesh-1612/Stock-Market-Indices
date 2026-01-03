@@ -1,3 +1,35 @@
+import pandas as pd
+import dash
+from dash import dcc, html, ctx, callback, Input, Output, State, clientside_callback
+import os
+import dash_bootstrap_components as dbc
+import sys
+
+# --- Register Page ---
+dash.register_page(__name__, name="Animated Growth", title="Animated Growth Chart")
+
+# --- Data Loading and Preparation ---
+df_final, unique_dates, unique_continents, date_marks, data_for_store = pd.DataFrame(), [], [], {}, []
+
+try:
+    # Import shared data loader
+    try:
+        from data_loader import global_data_loader
+    except ImportError:
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+        from data_loader import global_data_loader
+
+    # 1. Load index metadata
+    df_indices = global_data_loader.load_indices()
+
+    # 2. Load price data from shared loader
+    df_prices = global_data_loader.load_prices()
+
+    # 3. Process data
+    if not df_prices.empty:
+        df_indices = df_indices[df_indices['Ticker'] != '^MERV'].copy()
+        index_tickers = df_indices['Ticker'].tolist()
+        df_prices = df_prices[df_prices.columns.intersection(index_tickers)]
 
         # Use 'ME' for month-end frequency
         df_monthly = df_prices.resample('ME').last()
@@ -17,7 +49,6 @@ except Exception as e:
     print(f"Error loading data in Animated Growth page: {e}")
 
 
-# --- END OF NEW BLOCK ---
 # --- Page Layout ---
 layout = dbc.Container([
     html.H1("Stock Index Cumulative Growth Over Time", className="text-center my-4"),

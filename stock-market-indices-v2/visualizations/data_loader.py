@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import zipfile
 import gc
+import shutil
 import logging
 import tempfile
 import pyarrow.parquet as pq
@@ -51,12 +52,15 @@ class DataLoader:
             data_dir = self.get_data_dir()
             zip_path = os.path.join(data_dir, "final_all_historical_prices_parquet.zip")
             
-            # 1. Extract to temp file (required for column inspection and partial reads)
+            # 1. Extract to temp file (Streamed to avoid memory spike)
             logger.info("Extracting parquet file...")
             with zipfile.ZipFile(zip_path, 'r') as zf:
                 parquet_filename = [f for f in zf.namelist() if f.endswith('.parquet')][0]
                 with zf.open(parquet_filename) as source, open(temp_parquet_path, "wb") as target:
-                    target.write(source.read())
+                    shutil.copyfileobj(source, target)
+            
+            # Force GC after extraction
+            gc.collect()
 
             # 2. Inspect columns
             pf = pq.ParquetFile(temp_parquet_path)
@@ -109,8 +113,12 @@ class DataLoader:
 
             # 6. Combine
             logger.info("Merging dataframes...")
-            # concat will align on index. Indices will have full range, Stocks will have NaNs for older dates.
             self._df_prices = pd.concat([df_full] + partial_dfs, axis=1)
+            
+            # Cleanup intermediate variables to free memory immediately
+            del df_full
+            del partial_dfs
+            gc.collect()
             
             logger.info(f"Loaded. Shape: {self._df_prices.shape}, Memory: {self._df_prices.memory_usage().sum() / 1024**2:.2f} MB")
 
